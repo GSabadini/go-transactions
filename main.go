@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/GSabadini/go-transactions/infrastructure"
+)
 
 func main() {
-	fmt.Println("hello word")
+	infrastructure.NewApplication().Start()
 }

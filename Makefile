@@ -5,8 +5,11 @@ DOCKER_RUN = docker run --rm -it -v ${PWD}:/app -w /app ${IMAGE_NAME}
 init:
 	cp .env.example .env
 
+fmt:
+	go fmt ./...
+
 test:
-	go test -v -race -cover ./...
+	go test ./...
 
 up:
 	docker-compose up -d

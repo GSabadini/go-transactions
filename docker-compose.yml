@@ -13,3 +13,16 @@ services:
       - $GOPATH/pkg/mod/cache:/go/pkg/mod/cache
     env_file:
       - .env
+
+  mysql:
+    container_name: "mysql-transactions"
+    image: mysql:5.7
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: "dev"
+      MYSQL_DATABASE: "transactions"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./_scripts/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:rw
