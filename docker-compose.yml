@@ -10,7 +10,7 @@ services:
       - 3001:3001
     volumes:
       - .:/app
-      - $GOPATH/pkg/mod/cache:/go/pkg/mod/cache
+#      - $GOPATH/pkg/mod/cache:/go/pkg/mod/cache
     env_file:
       - .env
 

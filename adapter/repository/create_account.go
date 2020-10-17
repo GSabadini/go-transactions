@@ -5,18 +5,22 @@ import (
 	"database/sql"
 
 	"github.com/GSabadini/go-transactions/domain"
+	"github.com/go-sql-driver/mysql"
+	"github.com/pkg/errors"
 )
 
 type createAccountRepository struct {
 	db *sql.DB
 }
 
+// NewCreateAccountRepository creates new createAccountRepository with its dependencies
 func NewCreateAccountRepository(db *sql.DB) domain.CreateAccountRepository {
 	return createAccountRepository{
 		db: db,
 	}
 }
 
+// Create performs insert into the database
 func (c createAccountRepository) Create(ctx context.Context, account domain.Account) (domain.Account, error) {
 	if _, err := c.db.ExecContext(
 		ctx,
@@ -25,8 +29,13 @@ func (c createAccountRepository) Create(ctx context.Context, account domain.Acco
 		account.Document().Number(),
 		account.CreatedAt(),
 	); err != nil {
-		//return domain.Account{}, errors.Wrap(err, "error creating account")
-		return domain.Account{}, err
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == ERR_DUP_ENTRY {
+				return domain.Account{}, domain.ErrAccountAlreadyExists
+			}
+		}
+
+		return domain.Account{}, errors.Wrap(err, ErrDatabase.Error())
 	}
 
 	return account, nil

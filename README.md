@@ -1,9 +1,25 @@
+## Requirements/dependencies
+- Docker
+- Docker-compose
+
 ## Getting Started
 
 - Start application
 
 ```sh
 make start
+```
+
+- Run tests in container
+
+```sh
+make test
+```
+
+- Run tests local (it is necessary to have golang installed)
+
+```sh
+make test-local
 ```
 
 - View logs
@@ -23,6 +39,7 @@ make down
 | Endpoint        | HTTP Method           | Description       |
 | --------------- | :---------------------: | :-----------------: |
 | `/v1/accounts` | `POST`                | `Create account` |
+| `/v1/accounts` | `GET`                | `Find account by ID` |
 | `/v1/health`| `GET`                 | `Health check`  |
 
 
@@ -39,6 +56,24 @@ curl -i --request POST 'http://localhost:3001/v1/accounts' \
         "number": "12345678900"
     }
 }'
+```
+
+`Response`
+```json
+{
+    "id": "1a4028ea-3c18-4714-b650-d1058ae7a053",
+    "document": {
+        "number": "12345678900"
+    },
+    "created_at": "2020-10-17T02:28:05Z"
+}
+```
+
+- Find account by ID
+
+`Request`
+```bash
+curl -i --request GET 'http://localhost:3001/v1/accounts/1a4028ea-3c18-4714-b650-d1058ae7a053'
 ```
 
 `Response`

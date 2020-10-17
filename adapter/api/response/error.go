@@ -7,7 +7,8 @@ import (
 
 type Error struct {
 	statusCode int
-	Errors     []string `json:"errors"`
+	Errors     []map[string]string `json:"errors,omitempty"`
+	Error      string              `json:"error,omitempty"`
 }
 
 func (e Error) Send(w http.ResponseWriter) error {
@@ -19,13 +20,16 @@ func (e Error) Send(w http.ResponseWriter) error {
 func NewError(err error, status int) *Error {
 	return &Error{
 		statusCode: status,
-		Errors:     []string{err.Error()},
+		Error:      err.Error(),
 	}
 }
 
-func NewErrorMessage(messages []string, status int) *Error {
+func NewErrors(errs map[string]string, status int) *Error {
+	var errors = make([]map[string]string, 0)
+	errors = append(errors, errs)
+
 	return &Error{
 		statusCode: status,
-		Errors:     messages,
+		Errors:     errors,
 	}
 }

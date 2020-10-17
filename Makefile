@@ -1,9 +1,8 @@
 PWD = $(shell pwd -L)
 IMAGE_NAME = gsabadini/go-transactions
-DOCKER_RUN = docker run --rm -it -v ${PWD}:/app -w /app ${IMAGE_NAME}
+DOCKER_RUN = docker run --rm -it -w /app -v ${PWD}:/app golang:1.14-stretch
 
-start:
-	init && up
+start: init up
 
 init:
 	cp .env.example .env
@@ -12,6 +11,9 @@ fmt:
 	go fmt ./...
 
 test:
+	${DOCKER_RUN} go test ./...
+
+test-local:
 	go test ./...
 
 up:

@@ -2,13 +2,24 @@ package domain
 
 import (
 	"context"
+	"errors"
 	"time"
+)
+
+var (
+	ErrAccountAlreadyExists = errors.New("account already exists")
+	ErrAccountNotFound      = errors.New("account not found")
 )
 
 type (
 	// CreateAccountRepository defines the operation of creating a account entity
 	CreateAccountRepository interface {
 		Create(context.Context, Account) (Account, error)
+	}
+
+	// FindAccountByIDRepository defines the search operation for a account entity
+	FindAccountByIDRepository interface {
+		FindByID(context.Context, string) (Account, error)
 	}
 
 	// Account defines the account entity

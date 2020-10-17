@@ -11,30 +11,30 @@ import (
 type (
 	// Input port
 	CreateAccountUseCase interface {
-		Execute(context.Context, AccountInput) (AccountOutput, error)
+		Execute(context.Context, CreateAccountInput) (CreateAccountOutput, error)
 	}
 
 	// Input data
-	AccountInput struct {
+	CreateAccountInput struct {
 		Document struct {
-			Number string
+			Number string `json:"number" validate:"required"`
 		}
 	}
 
-	//Output port
+	// Output port
 	CreateAccountPresenter interface {
-		Output(domain.Account) AccountOutput
+		Output(domain.Account) CreateAccountOutput
 	}
 
 	// Output data
-	AccountOutput struct {
-		ID        string                `json:"id"`
-		Document  AccountDocumentOutput `json:"document"`
-		CreatedAt string                `json:"created_at"`
+	CreateAccountOutput struct {
+		ID        string                      `json:"id"`
+		Document  CreateAccountDocumentOutput `json:"document"`
+		CreatedAt string                      `json:"created_at"`
 	}
 
 	// Output data
-	AccountDocumentOutput struct {
+	CreateAccountDocumentOutput struct {
 		Number string `json:"number"`
 	}
 
@@ -59,7 +59,7 @@ func NewCreateAccountInteractor(
 }
 
 // Execute orchestrates the use case
-func (c createAccountInteractor) Execute(ctx context.Context, i AccountInput) (AccountOutput, error) {
+func (c createAccountInteractor) Execute(ctx context.Context, i CreateAccountInput) (CreateAccountOutput, error) {
 	ctx, cancel := context.WithTimeout(ctx, c.ctxTimeout)
 	defer cancel()
 

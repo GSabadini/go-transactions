@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"github.com/GSabadini/go-transactions/infrastructure/logger"
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
@@ -15,16 +15,16 @@ import (
 )
 
 type stubCreateAccountUseCase struct {
-	result usecase.AccountOutput
+	result usecase.CreateAccountOutput
 	err    error
 }
 
-func (s stubCreateAccountUseCase) Execute(_ context.Context, _ usecase.AccountInput) (usecase.AccountOutput, error) {
+func (s stubCreateAccountUseCase) Execute(_ context.Context, _ usecase.CreateAccountInput) (usecase.CreateAccountOutput, error) {
 	return s.result, s.err
 }
 
 func TestCreateAccountHandler_Handle(t *testing.T) {
-	logDummy := log.New(os.Stdout, "", log.LstdFlags)
+	logFake := logger.NewLogFake()
 
 	type fields struct {
 		uc  usecase.CreateAccountUseCase
@@ -42,16 +42,16 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 			name: "Create account success",
 			fields: fields{
 				uc: stubCreateAccountUseCase{
-					result: usecase.AccountOutput{
+					result: usecase.CreateAccountOutput{
 						ID: "cfd3c0e0-cfa7-4220-8e62-069657874aba",
-						Document: usecase.AccountDocumentOutput{
+						Document: usecase.CreateAccountDocumentOutput{
 							Number: "12345678900",
 						},
 						CreatedAt: "2020-10-16T17:50:39Z",
 					},
 					err: nil,
 				},
-				log: logDummy,
+				log: logFake,
 			},
 			rawPayload:     []byte(`{"document": {"number": "12345678900"}}`),
 			wantBody:       `{"id":"cfd3c0e0-cfa7-4220-8e62-069657874aba","document":{"number":"12345678900"},"created_at":"2020-10-16T17:50:39Z"}`,
@@ -61,10 +61,10 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 			name: "Create account repository error",
 			fields: fields{
 				uc: stubCreateAccountUseCase{
-					result: usecase.AccountOutput{},
+					result: usecase.CreateAccountOutput{},
 					err:    errors.New("db_error"),
 				},
-				log: logDummy,
+				log: logFake,
 			},
 			rawPayload:     []byte(`{"document": {"number": "12345678900"}}`),
 			wantBody:       `{"errors":["db_error"]}`,
@@ -74,10 +74,10 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 			name: "Create account failed to marshal",
 			fields: fields{
 				uc: stubCreateAccountUseCase{
-					result: usecase.AccountOutput{},
+					result: usecase.CreateAccountOutput{},
 					err:    nil,
 				},
-				log: logDummy,
+				log: logFake,
 			},
 			rawPayload:     []byte(`{"document":`),
 			wantBody:       `{"errors":["unexpected EOF"]}`,

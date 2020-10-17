@@ -14,10 +14,10 @@ func NewCreateAccountPresenter() usecase.CreateAccountPresenter {
 }
 
 // Output returns the account creation response
-func (c createAccountPresenter) Output(account domain.Account) usecase.AccountOutput {
-	return usecase.AccountOutput{
+func (c createAccountPresenter) Output(account domain.Account) usecase.CreateAccountOutput {
+	return usecase.CreateAccountOutput{
 		ID: account.ID(),
-		Document: usecase.AccountDocumentOutput{
+		Document: usecase.CreateAccountDocumentOutput{
 			Number: account.Document().Number(),
 		},
 		CreatedAt: account.CreatedAt().Format(time.RFC3339),

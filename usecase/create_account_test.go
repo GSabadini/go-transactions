@@ -20,10 +20,10 @@ func (s stubCreateAccountRepo) Create(_ context.Context, _ domain.Account) (doma
 }
 
 type stubCreateAccountPresenter struct {
-	result AccountOutput
+	result CreateAccountOutput
 }
 
-func (s stubCreateAccountPresenter) Output(_ domain.Account) AccountOutput {
+func (s stubCreateAccountPresenter) Output(_ domain.Account) CreateAccountOutput {
 	return s.result
 }
 
@@ -34,14 +34,14 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 		ctxTimeout time.Duration
 	}
 	type args struct {
-		ctx   context.Context
-		input AccountInput
+		ctx context.Context
+		i   CreateAccountInput
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    AccountOutput
+		want    CreateAccountOutput
 		wantErr bool
 	}{
 		{
@@ -56,9 +56,9 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 					err: nil,
 				},
 				pre: stubCreateAccountPresenter{
-					result: AccountOutput{
+					result: CreateAccountOutput{
 						ID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
-						Document: AccountDocumentOutput{
+						Document: CreateAccountDocumentOutput{
 							Number: "12345678900",
 						},
 						CreatedAt: time.Time{}.String(),
@@ -68,17 +68,17 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 			},
 			args: args{
 				ctx: context.Background(),
-				input: AccountInput{
+				i: CreateAccountInput{
 					Document: struct {
-						Number string
+						Number string `json:"number" validate:"required,number,len=11"`
 					}{
 						Number: "12345678900",
 					},
 				},
 			},
-			want: AccountOutput{
+			want: CreateAccountOutput{
 				ID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
-				Document: AccountDocumentOutput{
+				Document: CreateAccountDocumentOutput{
 					Number: "12345678900",
 				},
 				CreatedAt: time.Time{}.String(),
@@ -97,15 +97,38 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 			},
 			args: args{
 				ctx: context.Background(),
-				input: AccountInput{
+				i: CreateAccountInput{
 					Document: struct {
-						Number string
+						Number string `json:"number" validate:"required,number,len=11"`
 					}{
 						Number: "12345678900",
 					},
 				},
 			},
-			want:    AccountOutput{},
+			want:    CreateAccountOutput{},
+			wantErr: true,
+		},
+		{
+			name: "Create account already exists error",
+			fields: fields{
+				repo: stubCreateAccountRepo{
+					result: domain.Account{},
+					err:    domain.ErrAccountAlreadyExists,
+				},
+				pre:        stubCreateAccountPresenter{},
+				ctxTimeout: time.Second,
+			},
+			args: args{
+				ctx: context.Background(),
+				i: CreateAccountInput{
+					Document: struct {
+						Number string `json:"number" validate:"required,number,len=11"`
+					}{
+						Number: "12345678900",
+					},
+				},
+			},
+			want:    CreateAccountOutput{},
 			wantErr: true,
 		},
 	}
@@ -113,7 +136,7 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			interactor := NewCreateAccountInteractor(tt.fields.repo, tt.fields.pre, tt.fields.ctxTimeout)
 
-			got, err := interactor.Execute(tt.args.ctx, tt.args.input)
+			got, err := interactor.Execute(tt.args.ctx, tt.args.i)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("[TestCase '%s'] Err: '%v' | WantErr: '%v'", tt.name, err, tt.wantErr)
 				return
