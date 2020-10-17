@@ -29,12 +29,13 @@ type (
 		createdAt time.Time
 	}
 
+	// Document defines document property
 	Document struct {
 		number string
 	}
 )
 
-// NewAccount creates new account
+// NewAccount creates new Account
 func NewAccount(ID string, docNumber string, createdAt time.Time) Account {
 	return Account{
 		id: ID,

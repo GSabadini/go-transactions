@@ -1,9 +1,10 @@
 package presenter
 
 import (
+	"time"
+
 	"github.com/GSabadini/go-transactions/domain"
 	"github.com/GSabadini/go-transactions/usecase"
-	"time"
 )
 
 type createAccountPresenter struct{}

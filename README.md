@@ -1,34 +1,39 @@
-## Requirements/dependencies
+## Arquiteura
+-  A arquitetura é baseada nos conceitos de Clean Architecture propostas por Uncle Bob. Para mais detalhes clique [aqui](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
+
+![Clean Architecture](clean.png)
+
+## Requisitos
 - Docker
 - Docker-compose
 
-## Getting Started
+## Começando
 
-- Start application
+- Iniciar aplicação
 
 ```sh
 make start
 ```
 
-- Run tests in container
+- Rodar os testes utilizando um container
 
 ```sh
 make test
 ```
 
-- Run tests local (it is necessary to have golang installed)
+- Rodar os testes utilizando a máquina local
 
 ```sh
 make test-local
 ```
 
-- View logs
+- Ver os logs da aplicação
 
 ```sh
 make logs
 ```
 
-- Stop application
+- Destruir aplicação
 
 ```sh
 make down
@@ -36,16 +41,25 @@ make down
 
 ## API Endpoint
 
-| Endpoint        | HTTP Method           | Description       |
-| --------------- | :---------------------: | :-----------------: |
-| `/v1/accounts` | `POST`                | `Create account` |
-| `/v1/accounts` | `GET`                | `Find account by ID` |
-| `/v1/health`| `GET`                 | `Health check`  |
+| Endpoint           | Método HTTP           | Descrição             |
+| :----------------: | :-------------------: | :-------------------: |
+| `/v1/accounts`     | `POST`                | `Criar conta`         |
+| `/v1/accounts`     | `GET`                 | `Buscar conta por ID` |
+| `/v1/transactions` | `POST`                | `Criar transação`     |
+| `/v1/health`       | `GET`                 | `Health check`        |
 
+## Operações
 
-#### Test endpoints API using curl
+| ID                                     | Descrição           | Tipo     |
+| :------------------------------------: | :-----------------: | :------: |
+| `fd426041-0648-40f6-9d04-5284295c5095` | `COMPRA A VISTA`    | `DEBIT`  |
+| `b03dcb59-006f-472f-a8f1-58651990dea6` | `COMPRA PARCELADA`  | `DEBIT`  |
+| `3f973e5b-cb9f-475c-b27d-8f855a0b90b0` | `SAQUE`             | `DEBIT`  |
+| `976f88ea-eb2f-4325-a106-26f9cb35810d` | `PAGAMENTO`         | `CREDIT` |
 
-- Creating new account
+#### Testar API usando curl
+
+- Criar conta
 
 `Request`
 ```bash
@@ -69,7 +83,7 @@ curl -i --request POST 'http://localhost:3001/v1/accounts' \
 }
 ```
 
-- Find account by ID
+- Buscar conta por ID
 
 `Request`
 ```bash
@@ -86,3 +100,35 @@ curl -i --request GET 'http://localhost:3001/v1/accounts/1a4028ea-3c18-4714-b650
     "created_at": "2020-10-17T02:28:05Z"
 }
 ```
+
+- Criar transação
+
+`Request`
+```bash
+curl --location --request POST 'http://localhost:3001/v1/transactions' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "account_id": "1a4028ea-3c18-4714-b650-d1058ae7a053",
+    "operation_id": "3f973e5b-cb9f-475c-b27d-8f855a0b90b0",
+    "amount": 100
+}'
+```
+
+`Response`
+```json
+{
+    "id": "22985ca3-c777-4ab2-b433-ba3b6844578d",
+    "account_id": "1a4028ea-3c18-4714-b650-d1058ae7a053",
+    "operation": {
+        "id": "fd426041-0648-40f6-9d04-5284295c5095",
+        "description": "COMPRA A VISTA",
+        "type": "DEBIT"
+    },
+    "amount": -100,
+    "created_at": "2020-10-17T22:17:40Z"
+}
+```
+
+
+
+  

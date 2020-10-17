@@ -41,6 +41,9 @@ func (a Application) Start(addr string) {
 
 	api.Handle("/accounts", a.createAccountHandler()).Methods(http.MethodPost)
 	api.Handle("/accounts/{account_id}", a.findAccountByIDHandler()).Methods(http.MethodGet)
+
+	api.Handle("/transactions", a.createTransactionHandler()).Methods(http.MethodPost)
+
 	api.HandleFunc("/health", HealthCheck).Methods(http.MethodGet)
 
 	server := &http.Server{
@@ -52,14 +55,6 @@ func (a Application) Start(addr string) {
 
 	a.logger.Println("Starting HTTP Server in port:", addr)
 	a.logger.Fatal(server.ListenAndServe())
-}
-
-func HealthCheck(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(struct {
-		Status string `json:"status"`
-	}{Status: http.StatusText(http.StatusOK)})
 }
 
 func (a Application) createAccountHandler() http.HandlerFunc {
@@ -80,4 +75,22 @@ func (a Application) findAccountByIDHandler() http.HandlerFunc {
 	)
 
 	return handler.NewFindAccountByIDHandler(uc, a.logger).Handle
+}
+
+func (a Application) createTransactionHandler() http.HandlerFunc {
+	uc := usecase.NewCreateTransactionInteractor(
+		repository.NewCreateTransactionRepository(a.database),
+		presenter.NewCreateTransactionPresenter(),
+		5*time.Second,
+	)
+
+	return handler.NewCreateTransactionHandler(uc, a.logger, a.validator).Handle
+}
+
+func HealthCheck(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(struct {
+		Status string `json:"status"`
+	}{Status: http.StatusText(http.StatusOK)})
 }

@@ -63,7 +63,11 @@ func (c createAccountInteractor) Execute(ctx context.Context, i CreateAccountInp
 	ctx, cancel := context.WithTimeout(ctx, c.ctxTimeout)
 	defer cancel()
 
-	account, err := c.repo.Create(ctx, domain.NewAccount(uuid.New().String(), i.Document.Number, time.Now()))
+	account, err := c.repo.Create(ctx, domain.NewAccount(
+		uuid.New().String(),
+		i.Document.Number,
+		time.Now(),
+	))
 	if err != nil {
 		return c.pre.Output(domain.Account{}), err
 	}
