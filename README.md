@@ -1,15 +1,9 @@
 ## Getting Started
 
-- Environment variables
+- Start application
 
 ```sh
-make init
-```
-
-- Starting API
-
-```sh
-make up
+make start
 ```
 
 - View logs
@@ -18,7 +12,13 @@ make up
 make logs
 ```
 
-## API Request
+- Stop application
+
+```sh
+make down
+```
+
+## API Endpoint
 
 | Endpoint        | HTTP Method           | Description       |
 | --------------- | :---------------------: | :-----------------: |

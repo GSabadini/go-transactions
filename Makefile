@@ -2,6 +2,9 @@ PWD = $(shell pwd -L)
 IMAGE_NAME = gsabadini/go-transactions
 DOCKER_RUN = docker run --rm -it -v ${PWD}:/app -w /app ${IMAGE_NAME}
 
+start:
+	init && up
+
 init:
 	cp .env.example .env
 
