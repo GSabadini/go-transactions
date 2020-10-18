@@ -61,7 +61,7 @@ make down
 
 ## Testar API usando curl
 
-- Criar conta
+- #### Criar conta
 
 | Parâmetro    | Obrigatório  | Tipo       | Regras
 | :----------: | :----------: | :--------: | :---------:
@@ -90,7 +90,7 @@ curl -i --request POST 'http://localhost:3001/v1/accounts' \
 }
 ```
 
-- Buscar conta por ID
+- #### Buscar conta por ID
 
 `Request`
 ```bash
@@ -108,7 +108,7 @@ curl -i --request GET 'http://localhost:3001/v1/accounts/1a4028ea-3c18-4714-b650
 }
 ```
 
-- Criar transação
+- #### Criar transação
 
 | Parâmetro       | Obrigatório  | Tipo       | Regras     |
 | :-------------: | :----------: | :--------: | :--------: |
