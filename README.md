@@ -11,7 +11,7 @@
 
 ## Começando
 
-- Iniciar aplicação na porta :3001
+- Iniciar aplicação na porta `:3001`
 
 ```sh
 make start
@@ -46,7 +46,7 @@ make down
 | Endpoint           | Método HTTP           | Descrição             |
 | :----------------: | :-------------------: | :-------------------: |
 | `/v1/accounts`     | `POST`                | `Criar conta`         |
-| `/v1/accounts`     | `GET`                 | `Buscar conta por ID` |
+| `/v1/accounts/{:accountId}`     | `GET`                 | `Buscar conta por ID` |
 | `/v1/transactions` | `POST`                | `Criar transação`     |
 | `/v1/health`       | `GET`                 | `Health check`        |
 
@@ -94,7 +94,7 @@ curl -i --request POST 'http://localhost:3001/v1/accounts' \
 
 `Request`
 ```bash
-curl -i --request GET 'http://localhost:3001/v1/accounts/1a4028ea-3c18-4714-b650-d1058ae7a053'
+curl -i --request GET 'http://localhost:3001/v1/accounts/{:acountId}'
 ```
 
 `Response`
