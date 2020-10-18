@@ -59,7 +59,7 @@ make down
 | `3f973e5b-cb9f-475c-b27d-8f855a0b90b0` | `SAQUE`             | `DEBIT`  |
 | `976f88ea-eb2f-4325-a106-26f9cb35810d` | `PAGAMENTO`         | `CREDIT` |
 
-#### Testar API usando curl
+## Testar API usando curl
 
 - Criar conta
 
