@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Go Transactions :bank:</h1>
+<h1 align="center">Go Transactions :bank:</h1>
 
 ## Arquitetura
 -  A arquitetura é baseada nos conceitos de Clean Architecture propostas por Uncle Bob. Para mais detalhes clique [aqui](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
