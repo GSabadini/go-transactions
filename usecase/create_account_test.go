@@ -19,12 +19,16 @@ func (s stubCreateAccountRepo) Create(_ context.Context, _ domain.Account) (doma
 	return s.result, s.err
 }
 
-type stubCreateAccountPresenter struct {
-	result CreateAccountOutput
-}
+type stubCreateAccountPresenter struct{}
 
-func (s stubCreateAccountPresenter) Output(_ domain.Account) CreateAccountOutput {
-	return s.result
+func (s stubCreateAccountPresenter) Output(account domain.Account) CreateAccountOutput {
+	return CreateAccountOutput{
+		ID: account.ID(),
+		Document: CreateAccountDocumentOutput{
+			Number: account.Document().Number(),
+		},
+		CreatedAt: account.CreatedAt().String(),
+	}
 }
 
 func Test_createAccountInteractor_Execute(t *testing.T) {
@@ -55,22 +59,14 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 					),
 					err: nil,
 				},
-				pre: stubCreateAccountPresenter{
-					result: CreateAccountOutput{
-						ID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
-						Document: CreateAccountDocumentOutput{
-							Number: "12345678900",
-						},
-						CreatedAt: time.Time{}.String(),
-					},
-				},
+				pre:        stubCreateAccountPresenter{},
 				ctxTimeout: time.Second,
 			},
 			args: args{
 				ctx: context.Background(),
 				i: CreateAccountInput{
 					Document: struct {
-						Number string `json:"number" validate:"required,number,len=11"`
+						Number string `json:"number" validate:"required"`
 					}{
 						Number: "12345678900",
 					},
@@ -99,13 +95,15 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 				ctx: context.Background(),
 				i: CreateAccountInput{
 					Document: struct {
-						Number string `json:"number" validate:"required,number,len=11"`
+						Number string `json:"number" validate:"required"`
 					}{
 						Number: "12345678900",
 					},
 				},
 			},
-			want:    CreateAccountOutput{},
+			want: CreateAccountOutput{
+				CreatedAt: time.Time{}.String(),
+			},
 			wantErr: true,
 		},
 		{
@@ -122,13 +120,15 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 				ctx: context.Background(),
 				i: CreateAccountInput{
 					Document: struct {
-						Number string `json:"number" validate:"required,number,len=11"`
+						Number string `json:"number" validate:"required"`
 					}{
 						Number: "12345678900",
 					},
 				},
 			},
-			want:    CreateAccountOutput{},
+			want: CreateAccountOutput{
+				CreatedAt: time.Time{}.String(),
+			},
 			wantErr: true,
 		},
 	}

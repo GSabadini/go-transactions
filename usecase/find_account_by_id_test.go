@@ -19,12 +19,16 @@ func (s stubFindAccountByIDRepo) FindByID(_ context.Context, _ string) (domain.A
 	return s.result, s.err
 }
 
-type stubFindAccountByIDPresenter struct {
-	result FindAccountByIDOutput
-}
+type stubFindAccountByIDPresenter struct{}
 
-func (s stubFindAccountByIDPresenter) Output(_ domain.Account) FindAccountByIDOutput {
-	return s.result
+func (s stubFindAccountByIDPresenter) Output(account domain.Account) FindAccountByIDOutput {
+	return FindAccountByIDOutput{
+		ID: account.ID(),
+		Document: FindAccountByIDDocumentOutput{
+			Number: account.Document().Number(),
+		},
+		CreatedAt: account.CreatedAt().String(),
+	}
 }
 
 func Test_findAccountByIDInteractor_Execute(t *testing.T) {
@@ -55,17 +59,7 @@ func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 					),
 					err: nil,
 				},
-				pre: stubFindAccountByIDPresenter{
-					result: FindAccountByIDOutput{
-						ID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
-						Document: struct {
-							Number string `json:"number"`
-						}{
-							Number: "12345678900",
-						},
-						CreatedAt: time.Time{}.String(),
-					},
-				},
+				pre:        stubFindAccountByIDPresenter{},
 				ctxTimeout: time.Second,
 			},
 			args: args{
@@ -92,9 +86,7 @@ func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 					result: domain.Account{},
 					err:    domain.ErrAccountNotFound,
 				},
-				pre: stubFindAccountByIDPresenter{
-					result: FindAccountByIDOutput{},
-				},
+				pre:        stubFindAccountByIDPresenter{},
 				ctxTimeout: time.Second,
 			},
 			args: args{
@@ -103,7 +95,9 @@ func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 					ID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 				},
 			},
-			want:    FindAccountByIDOutput{},
+			want: FindAccountByIDOutput{
+				CreatedAt: time.Time{}.String(),
+			},
 			wantErr: true,
 		},
 		{
@@ -113,9 +107,7 @@ func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 					result: domain.Account{},
 					err:    errors.New("db_error"),
 				},
-				pre: stubFindAccountByIDPresenter{
-					result: FindAccountByIDOutput{},
-				},
+				pre:        stubFindAccountByIDPresenter{},
 				ctxTimeout: time.Second,
 			},
 			args: args{
@@ -124,7 +116,9 @@ func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 					ID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 				},
 			},
-			want:    FindAccountByIDOutput{},
+			want: FindAccountByIDOutput{
+				CreatedAt: time.Time{}.String(),
+			},
 			wantErr: true,
 		},
 	}

@@ -35,6 +35,7 @@ type (
 		CreatedAt string                           `json:"created_at"`
 	}
 
+	// Output data
 	CreateTransactionOperationOutput struct {
 		ID          string `json:"id"`
 		Description string `json:"description"`

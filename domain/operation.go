@@ -5,13 +5,11 @@ import "errors"
 const (
 	debit  string = "DEBIT"
 	credit string = "CREDIT"
-)
 
-const (
-	compraAVista    string = "fd426041-0648-40f6-9d04-5284295c5095"
-	compraParcelada string = "b03dcb59-006f-472f-a8f1-58651990dea6"
-	saque           string = "3f973e5b-cb9f-475c-b27d-8f855a0b90b0"
-	pagamento       string = "976f88ea-eb2f-4325-a106-26f9cb35810d"
+	CompraAVista    string = "fd426041-0648-40f6-9d04-5284295c5095"
+	CompraParcelada string = "b03dcb59-006f-472f-a8f1-58651990dea6"
+	Saque           string = "3f973e5b-cb9f-475c-b27d-8f855a0b90b0"
+	Pagamento       string = "976f88ea-eb2f-4325-a106-26f9cb35810d"
 )
 
 var (
@@ -30,23 +28,23 @@ type (
 // NewOperation checks if there is an operation and returns it
 func NewOperation(id string) (Operation, error) {
 	var operations = map[string]Operation{
-		compraAVista: {
-			id:          compraAVista,
+		CompraAVista: {
+			id:          CompraAVista,
 			description: "COMPRA A VISTA",
 			opType:      debit,
 		},
-		compraParcelada: {
-			id:          compraParcelada,
+		CompraParcelada: {
+			id:          CompraParcelada,
 			description: "COMPRA PARCELADA",
 			opType:      debit,
 		},
-		saque: {
-			id:          saque,
+		Saque: {
+			id:          Saque,
 			description: "SAQUE",
 			opType:      debit,
 		},
-		pagamento: {
-			id:          pagamento,
+		Pagamento: {
+			id:          Pagamento,
 			description: "PAGAMENTO",
 			opType:      credit,
 		},

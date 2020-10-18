@@ -5,10 +5,12 @@ import (
 	"os"
 )
 
+// NewLog create new log.Logger
 func NewLog() *log.Logger {
 	return log.New(os.Stdout, "", log.LstdFlags|log.Lmicroseconds)
 }
 
+// NewLogFake create new log.Logger with fake writer
 func NewLogFake() *log.Logger {
 	return log.New(fakeWriter{}, "", 0)
 }

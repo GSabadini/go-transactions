@@ -4,14 +4,16 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"github.com/GSabadini/go-transactions/infrastructure/logger"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
+	"github.com/GSabadini/go-transactions/infrastructure/logger"
+	"github.com/GSabadini/go-transactions/infrastructure/validation"
 	"github.com/GSabadini/go-transactions/usecase"
+	"github.com/go-playground/validator/v10"
 )
 
 type stubCreateAccountUseCase struct {
@@ -25,10 +27,12 @@ func (s stubCreateAccountUseCase) Execute(_ context.Context, _ usecase.CreateAcc
 
 func TestCreateAccountHandler_Handle(t *testing.T) {
 	logFake := logger.NewLogFake()
+	v := validation.NewValidator()
 
 	type fields struct {
-		uc  usecase.CreateAccountUseCase
-		log *log.Logger
+		uc        usecase.CreateAccountUseCase
+		log       *log.Logger
+		validator *validator.Validate
 	}
 
 	tests := []struct {
@@ -51,7 +55,8 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 					},
 					err: nil,
 				},
-				log: logFake,
+				log:       logFake,
+				validator: v,
 			},
 			rawPayload:     []byte(`{"document": {"number": "12345678900"}}`),
 			wantBody:       `{"id":"cfd3c0e0-cfa7-4220-8e62-069657874aba","document":{"number":"12345678900"},"created_at":"2020-10-16T17:50:39Z"}`,
@@ -77,7 +82,8 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 					result: usecase.CreateAccountOutput{},
 					err:    nil,
 				},
-				log: logFake,
+				log:       logFake,
+				validator: v,
 			},
 			rawPayload:     []byte(`{"document":`),
 			wantBody:       `{"errors":["unexpected EOF"]}`,
@@ -97,7 +103,7 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 
 			var (
 				w       = httptest.NewRecorder()
-				handler = NewCreateAccountHandler(tt.fields.uc, tt.fields.log)
+				handler = NewCreateAccountHandler(tt.fields.uc, tt.fields.log, tt.fields.validator)
 			)
 
 			handler.Handle(w, req)

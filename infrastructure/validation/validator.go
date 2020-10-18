@@ -18,6 +18,7 @@ var (
 	translate ut.Translator
 )
 
+// NewValidator create new validator.Validate
 func NewValidator() *validator.Validate {
 	en := en.New()
 	uni = ut.New(en, en)
@@ -40,7 +41,7 @@ func NewValidator() *validator.Validate {
 }
 
 func TranslateErr(err error) map[string]string {
-	var errs = make(map[string]string, 0)
+	var errs = make(map[string]string)
 
 	for _, e := range err.(validator.ValidationErrors) {
 		errs[formatErrName(e.Namespace())] = e.Translate(translate)

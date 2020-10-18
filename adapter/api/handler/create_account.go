@@ -11,14 +11,14 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// CreateAccountHandler
+// CreateAccountHandler defines the dependencies of the HTTP handler for the use case
 type CreateAccountHandler struct {
 	uc        usecase.CreateAccountUseCase
 	log       *log.Logger
 	validator *validator.Validate
 }
 
-// NewCreateAccountHandler
+// NewCreateAccountHandler creates new CreateAccountHandler with its dependencies
 func NewCreateAccountHandler(
 	uc usecase.CreateAccountUseCase,
 	log *log.Logger,
@@ -31,7 +31,7 @@ func NewCreateAccountHandler(
 	}
 }
 
-// Handle
+// Handle handles http request
 func (c CreateAccountHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	var input usecase.CreateAccountInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {

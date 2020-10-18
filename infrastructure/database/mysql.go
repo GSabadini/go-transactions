@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -18,9 +19,8 @@ func NewMySQLConnection() *sql.DB {
 		os.Getenv("MYSQL_PORT"),
 		os.Getenv("MYSQL_DATABASE"),
 	))
-
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	return db

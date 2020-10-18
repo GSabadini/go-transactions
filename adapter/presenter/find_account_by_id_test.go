@@ -1,11 +1,12 @@
 package presenter
 
 import (
-	"github.com/GSabadini/go-transactions/domain"
-	"github.com/GSabadini/go-transactions/usecase"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/GSabadini/go-transactions/domain"
+	"github.com/GSabadini/go-transactions/usecase"
 )
 
 func Test_findAccountByIDPresenter_Output(t *testing.T) {

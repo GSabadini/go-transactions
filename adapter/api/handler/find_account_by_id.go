@@ -10,11 +10,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// FindAccountByIDHandler defines the dependencies of the HTTP handler for the use case
 type FindAccountByIDHandler struct {
 	uc  usecase.FindAccountByIDUseCase
 	log *log.Logger
 }
 
+// NewFindAccountByIDHandler creates new FindAccountByIDHandler with its dependencies
 func NewFindAccountByIDHandler(uc usecase.FindAccountByIDUseCase, log *log.Logger) FindAccountByIDHandler {
 	return FindAccountByIDHandler{
 		uc:  uc,
@@ -22,6 +24,7 @@ func NewFindAccountByIDHandler(uc usecase.FindAccountByIDUseCase, log *log.Logge
 	}
 }
 
+// Handle handles http request
 func (f FindAccountByIDHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ID := mux.Vars(r)["account_id"]
 

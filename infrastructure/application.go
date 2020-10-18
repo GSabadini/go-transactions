@@ -20,6 +20,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Application define an application structure
 type Application struct {
 	database  *sql.DB
 	logger    *log.Logger
@@ -27,6 +28,7 @@ type Application struct {
 	validator *validator.Validate
 }
 
+// NewApplication creates new Application with its dependencies
 func NewApplication() *Application {
 	return &Application{
 		database:  database.NewMySQLConnection(),
@@ -36,6 +38,7 @@ func NewApplication() *Application {
 	}
 }
 
+// Start run the application
 func (a Application) Start(addr string) {
 	api := a.router.PathPrefix("/v1").Subrouter()
 
@@ -44,7 +47,7 @@ func (a Application) Start(addr string) {
 
 	api.Handle("/transactions", a.createTransactionHandler()).Methods(http.MethodPost)
 
-	api.HandleFunc("/health", HealthCheck).Methods(http.MethodGet)
+	api.HandleFunc("/health", healthCheck).Methods(http.MethodGet)
 
 	server := &http.Server{
 		ReadTimeout:  15 * time.Second,
@@ -87,7 +90,7 @@ func (a Application) createTransactionHandler() http.HandlerFunc {
 	return handler.NewCreateTransactionHandler(uc, a.logger, a.validator).Handle
 }
 
-func HealthCheck(w http.ResponseWriter, _ *http.Request) {
+func healthCheck(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(struct {

@@ -4,14 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/GSabadini/go-transactions/usecase"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/GSabadini/go-transactions/infrastructure/logger"
+	"github.com/GSabadini/go-transactions/usecase"
+	"github.com/gorilla/mux"
 )
 
 type stubFindAccountByIDUseCase struct {
@@ -24,7 +26,7 @@ func (s stubFindAccountByIDUseCase) Execute(_ context.Context, _ usecase.FindAcc
 }
 
 func TestFindAccountByIDHandler_Handle(t *testing.T) {
-	logDummy := log.New(fakeWriter{}, "", log.LstdFlags)
+	logFake := logger.NewLogFake()
 
 	type fields struct {
 		uc  usecase.FindAccountByIDUseCase
@@ -53,7 +55,7 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 					},
 					err: nil,
 				},
-				log: logDummy,
+				log: logFake,
 			},
 			args: args{
 				ID: "cfd3c0e0-cfa7-4220-8e62-069657874aba",
@@ -68,7 +70,7 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 					result: usecase.FindAccountByIDOutput{},
 					err:    errors.New("use case error"),
 				},
-				log: logDummy,
+				log: logFake,
 			},
 			args: args{
 				ID: "cfd3c0e0-cfa7-4220-8e62-069657874aba",
@@ -83,7 +85,7 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 					result: usecase.FindAccountByIDOutput{},
 					err:    nil,
 				},
-				log: logDummy,
+				log: logFake,
 			},
 			args: args{
 				ID: "",
