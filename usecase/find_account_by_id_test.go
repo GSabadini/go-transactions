@@ -80,7 +80,7 @@ func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Find account by id account not found",
+			name: "Account not found account when find account by id",
 			fields: fields{
 				repo: stubFindAccountByIDRepo{
 					result: domain.Account{},
@@ -101,7 +101,7 @@ func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Find account by id account repository error",
+			name: "Repository error when find account by id",
 			fields: fields{
 				repo: stubFindAccountByIDRepo{
 					result: domain.Account{},

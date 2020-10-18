@@ -30,12 +30,12 @@ func (c createAccountRepository) Create(ctx context.Context, account domain.Acco
 		account.CreatedAt(),
 	); err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
-			if mysqlErr.Number == ERR_DUP_ENTRY {
+			if mysqlErr.Number == errDupEntry {
 				return domain.Account{}, domain.ErrAccountAlreadyExists
 			}
 		}
 
-		return domain.Account{}, errors.Wrap(err, ErrDatabase.Error())
+		return domain.Account{}, errors.Wrap(err, errDatabase.Error())
 	}
 
 	return account, nil

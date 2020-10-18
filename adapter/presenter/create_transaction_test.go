@@ -10,7 +10,10 @@ import (
 )
 
 func Test_createTransactionPresenter_Output(t *testing.T) {
-	var op, _ = domain.NewOperation("fd426041-0648-40f6-9d04-5284295c5095")
+	var (
+		opCompraAVista, _ = domain.NewOperation(domain.CompraAVista)
+		opPagamento, _    = domain.NewOperation(domain.Pagamento)
+	)
 
 	type args struct {
 		transaction domain.Transaction
@@ -21,12 +24,12 @@ func Test_createTransactionPresenter_Output(t *testing.T) {
 		want usecase.CreateTransactionOutput
 	}{
 		{
-			name: "Create transaction output",
+			name: "Create transaction operation type compra a vista output",
 			args: args{
 				transaction: domain.NewTransaction(
 					"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 					"eae0bbf7-19ee-46d6-8244-77bccd64ab93",
-					op,
+					opCompraAVista,
 					100.25,
 					time.Time{},
 				),
@@ -40,6 +43,29 @@ func Test_createTransactionPresenter_Output(t *testing.T) {
 					Type:        "DEBIT",
 				},
 				Amount:    -100.25,
+				CreatedAt: "0001-01-01T00:00:00Z",
+			},
+		},
+		{
+			name: "Create transaction operation type pagamento output",
+			args: args{
+				transaction: domain.NewTransaction(
+					"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+					"eae0bbf7-19ee-46d6-8244-77bccd64ab93",
+					opPagamento,
+					100.25,
+					time.Time{},
+				),
+			},
+			want: usecase.CreateTransactionOutput{
+				ID:        "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+				AccountID: "eae0bbf7-19ee-46d6-8244-77bccd64ab93",
+				Operation: usecase.CreateTransactionOperationOutput{
+					ID:          "976f88ea-eb2f-4325-a106-26f9cb35810d",
+					Description: "PAGAMENTO",
+					Type:        "CREDIT",
+				},
+				Amount:    100.25,
 				CreatedAt: "0001-01-01T00:00:00Z",
 			},
 		},

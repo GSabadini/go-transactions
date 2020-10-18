@@ -3,9 +3,9 @@ package repository
 import "errors"
 
 const (
-	ERR_DUP_ENTRY = 1062
+	errDupEntry = 1062
 )
 
 var (
-	ErrDatabase = errors.New("database error")
+	errDatabase = errors.New("database error")
 )

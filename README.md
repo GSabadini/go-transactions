@@ -1,3 +1,5 @@
+<h1 align="center">Welcome to Go Transactions :bank:</h1>
+
 ## Arquitetura
 -  A arquitetura é baseada nos conceitos de Clean Architecture propostas por Uncle Bob. Para mais detalhes clique [aqui](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
@@ -61,6 +63,11 @@ make down
 
 - Criar conta
 
+| Parâmetro    | Obrigatório  | Tipo       | Regras
+| :----------: | :----------: | :--------: | :---------:
+| `document`   | `Sim`        | `Object`   |           |
+| `document.number`     | `Sim`        | `String`   | `Máximo 30 caracteres` |
+
 `Request`
 ```bash
 curl -i --request POST 'http://localhost:3001/v1/accounts' \
@@ -102,6 +109,12 @@ curl -i --request GET 'http://localhost:3001/v1/accounts/1a4028ea-3c18-4714-b650
 ```
 
 - Criar transação
+
+| Parâmetro       | Obrigatório  | Tipo       | Regras     |
+| :-------------: | :----------: | :--------: | :--------: |
+| `account_id`    | `Sim`        | `String`   |            |
+| `operation_id`  | `Sim`        | `String`   |            |
+| `amount`        | `Sim`        | `Float`    |  `Maior que zero`|
 
 `Request`
 ```bash

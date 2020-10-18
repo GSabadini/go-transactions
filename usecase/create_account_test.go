@@ -49,7 +49,7 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Create account success",
+			name: "Create account successfully",
 			fields: fields{
 				repo: stubCreateAccountRepo{
 					result: domain.NewAccount(
@@ -82,7 +82,7 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Create account repository error",
+			name: "Repository error when create account",
 			fields: fields{
 				repo: stubCreateAccountRepo{
 					result: domain.Account{},
@@ -107,7 +107,7 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Create account already exists error",
+			name: "Error creating existing account",
 			fields: fields{
 				repo: stubCreateAccountRepo{
 					result: domain.Account{},

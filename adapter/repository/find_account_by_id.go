@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/GSabadini/go-transactions/domain"
+	"github.com/pkg/errors"
 )
 
 type findAccountByIDRepository struct {
@@ -36,6 +37,6 @@ func (f findAccountByIDRepository) FindByID(ctx context.Context, ID string) (dom
 	case err == sql.ErrNoRows:
 		return domain.Account{}, domain.ErrAccountNotFound
 	default:
-		return domain.NewAccount(id, docNumber, createdAt), err
+		return domain.NewAccount(id, docNumber, createdAt), errors.Wrap(err, errDatabase.Error())
 	}
 }

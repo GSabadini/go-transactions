@@ -55,7 +55,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Create transaction success",
+			name: "Create successful transaction",
 			fields: fields{
 				repo: stubCreateTransactionRepo{
 					result: domain.NewTransaction(
@@ -84,7 +84,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				Operation: CreateTransactionOperationOutput{
 					ID:          domain.CompraAVista,
 					Description: "COMPRA A VISTA",
-					Type:        "DEBIT",
+					Type:        domain.Debit,
 				},
 				Amount:    -100.25,
 				CreatedAt: time.Time{}.String(),
@@ -92,7 +92,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Create transaction operation type invalid error",
+			name: "Error creating transaction with invalid operation",
 			fields: fields{
 				repo: stubCreateTransactionRepo{
 					result: domain.Transaction{},
@@ -105,7 +105,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				ctx: context.Background(),
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
-					OperationID: "",
+					OperationID: "invalid operation",
 					Amount:      100.25,
 				},
 			},
@@ -115,7 +115,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Create transaction repository error",
+			name: "Repository error when create transaction",
 			fields: fields{
 				repo: stubCreateTransactionRepo{
 					result: domain.Transaction{},

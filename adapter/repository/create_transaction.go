@@ -30,7 +30,7 @@ func (c createTransactionRepository) Create(ctx context.Context, transaction dom
 		transaction.Amount(),
 		transaction.CreatedAt(),
 	); err != nil {
-		return domain.Transaction{}, errors.Wrap(err, ErrDatabase.Error())
+		return domain.Transaction{}, errors.Wrap(err, errDatabase.Error())
 	}
 
 	return transaction, nil

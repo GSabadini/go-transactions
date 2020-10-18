@@ -3,8 +3,8 @@ package domain
 import "errors"
 
 const (
-	debit  string = "DEBIT"
-	credit string = "CREDIT"
+	Debit  string = "DEBIT"
+	Credit string = "CREDIT"
 
 	CompraAVista    string = "fd426041-0648-40f6-9d04-5284295c5095"
 	CompraParcelada string = "b03dcb59-006f-472f-a8f1-58651990dea6"
@@ -31,22 +31,22 @@ func NewOperation(id string) (Operation, error) {
 		CompraAVista: {
 			id:          CompraAVista,
 			description: "COMPRA A VISTA",
-			opType:      debit,
+			opType:      Debit,
 		},
 		CompraParcelada: {
 			id:          CompraParcelada,
 			description: "COMPRA PARCELADA",
-			opType:      debit,
+			opType:      Debit,
 		},
 		Saque: {
 			id:          Saque,
 			description: "SAQUE",
-			opType:      debit,
+			opType:      Debit,
 		},
 		Pagamento: {
 			id:          Pagamento,
 			description: "PAGAMENTO",
-			opType:      credit,
+			opType:      Credit,
 		},
 	}
 

@@ -17,7 +17,7 @@ type (
 	// Input data
 	CreateAccountInput struct {
 		Document struct {
-			Number string `json:"number" validate:"required"`
+			Number string `json:"number" validate:"required,max=30"`
 		}
 	}
 

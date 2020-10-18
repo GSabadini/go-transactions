@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/GSabadini/go-transactions/adapter/api/handler"
@@ -39,7 +40,7 @@ func NewApplication() *Application {
 }
 
 // Start run the application
-func (a Application) Start(addr string) {
+func (a Application) Start() {
 	api := a.router.PathPrefix("/v1").Subrouter()
 
 	api.Handle("/accounts", a.createAccountHandler()).Methods(http.MethodPost)
@@ -52,11 +53,11 @@ func (a Application) Start(addr string) {
 	server := &http.Server{
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
-		Addr:         fmt.Sprintf(":%s", addr),
+		Addr:         fmt.Sprintf(":%s", os.Getenv("APP_PORT")),
 		Handler:      a.router,
 	}
 
-	a.logger.Println("Starting HTTP Server in port:", addr)
+	a.logger.Println("Starting HTTP Server in port:", os.Getenv("APP_PORT"))
 	a.logger.Fatal(server.ListenAndServe())
 }
 

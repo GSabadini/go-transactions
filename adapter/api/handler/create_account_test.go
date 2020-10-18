@@ -43,7 +43,7 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 		wantStatusCode int
 	}{
 		{
-			name: "Create account success",
+			name: "Create account successfully",
 			fields: fields{
 				uc: stubCreateAccountUseCase{
 					result: usecase.CreateAccountOutput{
@@ -63,7 +63,7 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 			wantStatusCode: http.StatusCreated,
 		},
 		{
-			name: "Create account repository error",
+			name: "Repository error when create account",
 			fields: fields{
 				uc: stubCreateAccountUseCase{
 					result: usecase.CreateAccountOutput{},
@@ -76,7 +76,7 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 			wantStatusCode: http.StatusInternalServerError,
 		},
 		{
-			name: "Create account failed to marshal",
+			name: "Error failed to marshal when create account",
 			fields: fields{
 				uc: stubCreateAccountUseCase{
 					result: usecase.CreateAccountOutput{},

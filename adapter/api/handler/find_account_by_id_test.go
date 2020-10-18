@@ -64,7 +64,7 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 			wantStatusCode: http.StatusOK,
 		},
 		{
-			name: "Find account by id use case error",
+			name: "Use case error",
 			fields: fields{
 				uc: stubFindAccountByIDUseCase{
 					result: usecase.FindAccountByIDOutput{},
@@ -79,7 +79,7 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 			wantStatusCode: http.StatusInternalServerError,
 		},
 		{
-			name: "Find account by id invalid account id",
+			name: "Error invalid account id",
 			fields: fields{
 				uc: stubFindAccountByIDUseCase{
 					result: usecase.FindAccountByIDOutput{},

@@ -9,7 +9,7 @@ import (
 )
 
 type (
-	// Input port
+	//  Input port
 	CreateTransactionUseCase interface {
 		Execute(context.Context, CreateTransactionInput) (CreateTransactionOutput, error)
 	}

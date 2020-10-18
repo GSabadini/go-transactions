@@ -25,7 +25,7 @@ down:
 logs:
 	docker-compose logs -f app
 
-build-prod:
+build:
 	docker build -t ${IMAGE_NAME} -f Dockerfile .
 
 ci:

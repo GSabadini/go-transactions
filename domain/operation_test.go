@@ -23,7 +23,7 @@ func TestNewOperation(t *testing.T) {
 			want: Operation{
 				id:          CompraAVista,
 				description: "COMPRA A VISTA",
-				opType:      debit,
+				opType:      Debit,
 			},
 			wantErr: false,
 		},
@@ -35,7 +35,7 @@ func TestNewOperation(t *testing.T) {
 			want: Operation{
 				id:          CompraParcelada,
 				description: "COMPRA PARCELADA",
-				opType:      debit,
+				opType:      Debit,
 			},
 			wantErr: false,
 		},
@@ -47,7 +47,7 @@ func TestNewOperation(t *testing.T) {
 			want: Operation{
 				id:          Saque,
 				description: "SAQUE",
-				opType:      debit,
+				opType:      Debit,
 			},
 			wantErr: false,
 		},
@@ -59,12 +59,12 @@ func TestNewOperation(t *testing.T) {
 			want: Operation{
 				id:          Pagamento,
 				description: "PAGAMENTO",
-				opType:      credit,
+				opType:      Credit,
 			},
 			wantErr: false,
 		},
 		{
-			name: "Create invalid operation",
+			name: "Error operation type invalid",
 			args: args{
 				id: "123",
 			},

@@ -5,18 +5,14 @@ import (
 	"net/http"
 )
 
+// Error defines the structure of success for http responses
 type Error struct {
 	statusCode int
 	Errors     []map[string]string `json:"errors,omitempty"`
 	Error      string              `json:"error,omitempty"`
 }
 
-func (e Error) Send(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(e.statusCode)
-	return json.NewEncoder(w).Encode(e)
-}
-
+// NewError creates new Success
 func NewError(err error, status int) *Error {
 	return &Error{
 		statusCode: status,
@@ -32,4 +28,11 @@ func NewErrors(errs map[string]string, status int) *Error {
 		statusCode: status,
 		Errors:     errors,
 	}
+}
+
+// Send returns a response with JSON format
+func (e Error) Send(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(e.statusCode)
+	return json.NewEncoder(w).Encode(e)
 }

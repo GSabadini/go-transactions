@@ -19,14 +19,14 @@ func TestTransaction_Amount(t *testing.T) {
 		want   float64
 	}{
 		{
-			name: "Return amount operation type debit",
+			name: "Return amount operation type Debit",
 			fields: fields{
 				id:        "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 				accountID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 				operation: Operation{
 					id:          CompraAVista,
 					description: "COMPRA A VISTA",
-					opType:      debit,
+					opType:      Debit,
 				},
 				amount:    100.24,
 				createdAt: time.Time{},
@@ -34,14 +34,14 @@ func TestTransaction_Amount(t *testing.T) {
 			want: -100.24,
 		},
 		{
-			name: "Return amount operation type credit",
+			name: "Return amount operation type Credit",
 			fields: fields{
 				id:        "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 				accountID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 				operation: Operation{
 					id:          Pagamento,
 					description: "PAGAMENTO",
-					opType:      credit,
+					opType:      Credit,
 				},
 				amount:    100.24,
 				createdAt: time.Time{},

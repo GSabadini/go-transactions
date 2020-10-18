@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -42,6 +43,7 @@ func (c CreateAccountHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if err := c.validator.Struct(input); err != nil {
+		fmt.Println(err, "EEEERRR")
 		errs := validation.TranslateErr(err)
 		c.log.Println("invalid input:", errs)
 		response.NewErrors(errs, http.StatusBadRequest).Send(w)

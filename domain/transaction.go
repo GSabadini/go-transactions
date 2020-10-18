@@ -49,7 +49,7 @@ func (t Transaction) Operation() Operation {
 
 // Amount returns the amount property
 func (t Transaction) Amount() float64 {
-	if t.operation.opType == credit {
+	if t.operation.opType == Credit {
 		return t.amount
 	}
 	return -t.amount
