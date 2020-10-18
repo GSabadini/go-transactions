@@ -11,7 +11,7 @@
 
 ## Começando
 
-- Iniciar aplicação
+- Iniciar aplicação na porta :3001
 
 ```sh
 make start
