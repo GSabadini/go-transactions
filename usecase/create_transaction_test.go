@@ -39,7 +39,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 	var opCompraAVista, _ = domain.NewOperation("fd426041-0648-40f6-9d04-5284295c5095")
 
 	type fields struct {
-		repo       domain.CreateTransactionRepository
+		repo       domain.TransactionCreator
 		pre        CreateTransactionPresenter
 		ctxTimeout time.Duration
 	}

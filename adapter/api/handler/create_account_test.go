@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"github.com/GSabadini/go-transactions/domain"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -63,20 +64,21 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 			wantStatusCode: http.StatusCreated,
 		},
 		{
-			name: "Repository error when create account",
+			name: "Error creating existing account",
 			fields: fields{
 				uc: stubCreateAccountUseCase{
 					result: usecase.CreateAccountOutput{},
-					err:    errors.New("db_error"),
+					err:    domain.ErrAccountAlreadyExists,
 				},
-				log: logFake,
+				log:       logFake,
+				validator: v,
 			},
 			rawPayload:     []byte(`{"document": {"number": "12345678900"}}`),
-			wantBody:       `{"errors":["db_error"]}`,
-			wantStatusCode: http.StatusInternalServerError,
+			wantBody:       `{"errors":["account already exists"]}`,
+			wantStatusCode: http.StatusUnprocessableEntity,
 		},
 		{
-			name: "Error failed to marshal when create account",
+			name: "Error required field",
 			fields: fields{
 				uc: stubCreateAccountUseCase{
 					result: usecase.CreateAccountOutput{},
@@ -85,9 +87,37 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 				log:       logFake,
 				validator: v,
 			},
-			rawPayload:     []byte(`{"document":`),
-			wantBody:       `{"errors":["unexpected EOF"]}`,
+			rawPayload:     []byte(`{"document": {}}`),
+			wantBody:       `{"errors":["number is a required field"]}`,
 			wantStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "Error exceeded the number of characters field",
+			fields: fields{
+				uc: stubCreateAccountUseCase{
+					result: usecase.CreateAccountOutput{},
+					err:    nil,
+				},
+				log:       logFake,
+				validator: v,
+			},
+			rawPayload:     []byte(`{"document": {"number": "1234567899876545646455432103215648721212156451546456451205554564564564564"}}`),
+			wantBody:       `{"errors":["number must be a maximum of 30 characters in length"]}`,
+			wantStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "Repository error when create account",
+			fields: fields{
+				uc: stubCreateAccountUseCase{
+					result: usecase.CreateAccountOutput{},
+					err:    errors.New("db_error"),
+				},
+				log:       logFake,
+				validator: v,
+			},
+			rawPayload:     []byte(`{"document": {"number": "12345678900"}}`),
+			wantBody:       `{"errors":["db_error"]}`,
+			wantStatusCode: http.StatusInternalServerError,
 		},
 	}
 	for _, tt := range tests {

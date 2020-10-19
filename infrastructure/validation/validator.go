@@ -40,16 +40,10 @@ func NewValidator() *validator.Validate {
 	return validate
 }
 
-func TranslateErr(err error) map[string]string {
-	var errs = make(map[string]string)
-
+func ErrMessages(err error) []string {
+	var msgs []string
 	for _, e := range err.(validator.ValidationErrors) {
-		errs[formatErrName(e.Namespace())] = e.Translate(translate)
+		msgs = append(msgs, e.Translate(translate))
 	}
-
-	return errs
-}
-
-func formatErrName(n string) string {
-	return strings.Join(strings.Split(strings.ToLower(n), ".")[1:], ".")
+	return msgs
 }

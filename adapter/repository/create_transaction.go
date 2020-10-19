@@ -13,7 +13,7 @@ type createTransactionRepository struct {
 }
 
 // NewCreateTransactionRepository creates new createTransactionRepository with its dependencies
-func NewCreateTransactionRepository(db *sql.DB) domain.CreateTransactionRepository {
+func NewCreateTransactionRepository(db *sql.DB) domain.TransactionCreator {
 	return createTransactionRepository{
 		db: db,
 	}

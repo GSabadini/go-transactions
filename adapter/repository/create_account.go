@@ -14,7 +14,7 @@ type createAccountRepository struct {
 }
 
 // NewCreateAccountRepository creates new createAccountRepository with its dependencies
-func NewCreateAccountRepository(db *sql.DB) domain.CreateAccountRepository {
+func NewCreateAccountRepository(db *sql.DB) domain.AccountCreator {
 	return createAccountRepository{
 		db: db,
 	}

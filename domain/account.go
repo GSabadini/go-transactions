@@ -12,13 +12,13 @@ var (
 )
 
 type (
-	// CreateAccountRepository defines the operation of creating a account entity
-	CreateAccountRepository interface {
+	// AccountCreator defines the operation of creating a account entity
+	AccountCreator interface {
 		Create(context.Context, Account) (Account, error)
 	}
 
-	// FindAccountByIDRepository defines the search operation for a account entity
-	FindAccountByIDRepository interface {
+	// AccountFinder defines the search operation for a account entity
+	AccountFinder interface {
 		FindByID(context.Context, string) (Account, error)
 	}
 

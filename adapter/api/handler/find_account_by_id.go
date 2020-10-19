@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"errors"
 	"log"
 	"net/http"
 
 	"github.com/GSabadini/go-transactions/adapter/api/response"
+	"github.com/GSabadini/go-transactions/domain"
 	"github.com/GSabadini/go-transactions/usecase"
 	"github.com/gorilla/mux"
 )
@@ -29,16 +29,23 @@ func (f FindAccountByIDHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ID := mux.Vars(r)["account_id"]
 
 	if ID == "" {
-		err := errors.New("invalid account id")
-		response.NewError(err, http.StatusBadRequest).Send(w)
+		response.NewError([]string{"invalid account id"}, http.StatusBadRequest).Send(w)
 		return
 	}
 
 	output, err := f.uc.Execute(r.Context(), usecase.FindAccountByIDInput{ID: ID})
 	if err != nil {
-		response.NewError(err, http.StatusInternalServerError).Send(w)
-		return
+		f.log.Println("failed to find account:", err)
+		switch err {
+		case domain.ErrAccountNotFound:
+			response.NewError([]string{err.Error()}, http.StatusNotFound).Send(w)
+			return
+		default:
+			response.NewError([]string{err.Error()}, http.StatusInternalServerError).Send(w)
+			return
+		}
 	}
 
+	f.log.Println("success to find account")
 	response.NewSuccess(output, http.StatusOK).Send(w)
 }

@@ -21,17 +21,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Application define an application structure
-type Application struct {
+// HTTPServer define an application structure
+type HTTPServer struct {
 	database  *sql.DB
 	logger    *log.Logger
 	router    *mux.Router
 	validator *validator.Validate
 }
 
-// NewApplication creates new Application with its dependencies
-func NewApplication() *Application {
-	return &Application{
+// NewHTTPServer creates new HTTPServer with its dependencies
+func NewHTTPServer() *HTTPServer {
+	return &HTTPServer{
 		database:  database.NewMySQLConnection(),
 		logger:    logger.NewLog(),
 		router:    router.NewGorillaMux(),
@@ -40,7 +40,7 @@ func NewApplication() *Application {
 }
 
 // Start run the application
-func (a Application) Start() {
+func (a HTTPServer) Start() {
 	api := a.router.PathPrefix("/v1").Subrouter()
 
 	api.Handle("/accounts", a.createAccountHandler()).Methods(http.MethodPost)
@@ -61,7 +61,7 @@ func (a Application) Start() {
 	a.logger.Fatal(server.ListenAndServe())
 }
 
-func (a Application) createAccountHandler() http.HandlerFunc {
+func (a HTTPServer) createAccountHandler() http.HandlerFunc {
 	uc := usecase.NewCreateAccountInteractor(
 		repository.NewCreateAccountRepository(a.database),
 		presenter.NewCreateAccountPresenter(),
@@ -71,7 +71,7 @@ func (a Application) createAccountHandler() http.HandlerFunc {
 	return handler.NewCreateAccountHandler(uc, a.logger, a.validator).Handle
 }
 
-func (a Application) findAccountByIDHandler() http.HandlerFunc {
+func (a HTTPServer) findAccountByIDHandler() http.HandlerFunc {
 	uc := usecase.NewFindAccountByIDInteractor(
 		repository.NewAccountByIDRepository(a.database),
 		presenter.NewFindAccountByIDPresenter(),
@@ -81,7 +81,7 @@ func (a Application) findAccountByIDHandler() http.HandlerFunc {
 	return handler.NewFindAccountByIDHandler(uc, a.logger).Handle
 }
 
-func (a Application) createTransactionHandler() http.HandlerFunc {
+func (a HTTPServer) createTransactionHandler() http.HandlerFunc {
 	uc := usecase.NewCreateTransactionInteractor(
 		repository.NewCreateTransactionRepository(a.database),
 		presenter.NewCreateTransactionPresenter(),

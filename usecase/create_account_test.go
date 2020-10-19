@@ -33,7 +33,7 @@ func (s stubCreateAccountPresenter) Output(account domain.Account) CreateAccount
 
 func Test_createAccountInteractor_Execute(t *testing.T) {
 	type fields struct {
-		repo       domain.CreateAccountRepository
+		repo       domain.AccountCreator
 		pre        CreateAccountPresenter
 		ctxTimeout time.Duration
 	}
@@ -66,7 +66,7 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 				ctx: context.Background(),
 				i: CreateAccountInput{
 					Document: struct {
-						Number string `json:"number" validate:"required"`
+						Number string `json:"number" validate:"required,max=30"`
 					}{
 						Number: "12345678900",
 					},
@@ -95,7 +95,7 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 				ctx: context.Background(),
 				i: CreateAccountInput{
 					Document: struct {
-						Number string `json:"number" validate:"required"`
+						Number string `json:"number" validate:"required,max=30"`
 					}{
 						Number: "12345678900",
 					},
@@ -120,7 +120,7 @@ func Test_createAccountInteractor_Execute(t *testing.T) {
 				ctx: context.Background(),
 				i: CreateAccountInput{
 					Document: struct {
-						Number string `json:"number" validate:"required"`
+						Number string `json:"number" validate:"required,max=30"`
 					}{
 						Number: "12345678900",
 					},

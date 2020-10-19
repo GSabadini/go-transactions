@@ -43,7 +43,7 @@ type (
 	}
 
 	createTransactionInteractor struct {
-		repo       domain.CreateTransactionRepository
+		repo       domain.TransactionCreator
 		pre        CreateTransactionPresenter
 		ctxTimeout time.Duration
 	}
@@ -51,7 +51,7 @@ type (
 
 // NewCreateTransactionInteractor creates new createTransactionInteractor with its dependencies
 func NewCreateTransactionInteractor(
-	repo domain.CreateTransactionRepository,
+	repo domain.TransactionCreator,
 	pre CreateTransactionPresenter,
 	ctxTimeout time.Duration,
 ) CreateTransactionUseCase {

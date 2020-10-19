@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/GSabadini/go-transactions/domain"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -43,7 +44,7 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 		wantStatusCode int
 	}{
 		{
-			name: "Find account by id success",
+			name: "Find account by id successfully",
 			fields: fields{
 				uc: stubFindAccountByIDUseCase{
 					result: usecase.FindAccountByIDOutput{
@@ -64,18 +65,18 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 			wantStatusCode: http.StatusOK,
 		},
 		{
-			name: "Use case error",
+			name: "Repository error when find account",
 			fields: fields{
 				uc: stubFindAccountByIDUseCase{
 					result: usecase.FindAccountByIDOutput{},
-					err:    errors.New("use case error"),
+					err:    errors.New("db_error"),
 				},
 				log: logFake,
 			},
 			args: args{
 				ID: "cfd3c0e0-cfa7-4220-8e62-069657874aba",
 			},
-			wantBody:       `{"errors":{"error":"use case error"}}`,
+			wantBody:       `{"errors":["db_error"]}`,
 			wantStatusCode: http.StatusInternalServerError,
 		},
 		{
@@ -90,8 +91,23 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 			args: args{
 				ID: "",
 			},
-			wantBody:       `{"errors":{"error":"invalid account id"}}`,
+			wantBody:       `{"errors":["invalid account id"]}`,
 			wantStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "Account not found account when find account by id",
+			fields: fields{
+				uc: stubFindAccountByIDUseCase{
+					result: usecase.FindAccountByIDOutput{},
+					err:    domain.ErrAccountNotFound,
+				},
+				log: logFake,
+			},
+			args: args{
+				ID: "cfd3c0e0-cfa7-4220-8e62-069657874aba",
+			},
+			wantBody:       `{"errors":["account not found"]}`,
+			wantStatusCode: http.StatusNotFound,
 		},
 	}
 	for _, tt := range tests {

@@ -29,6 +29,12 @@ make test
 make test-local
 ```
 
+- Gerar coverage
+
+```sh
+make coverage
+```
+
 - Ver os logs da aplicação
 
 ```sh

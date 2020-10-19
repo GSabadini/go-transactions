@@ -6,8 +6,8 @@ import (
 )
 
 type (
-	// CreateTransactionRepository defines the operation of creating a transaction entity
-	CreateTransactionRepository interface {
+	// TransactionCreator defines the operation of creating a transaction entity
+	TransactionCreator interface {
 		Create(context.Context, Transaction) (Transaction, error)
 	}
 
@@ -23,6 +23,10 @@ type (
 
 // NewTransaction creates new Transaction
 func NewTransaction(id string, accID string, op Operation, amount float64, createdAt time.Time) Transaction {
+	if op.opType == Debit {
+		amount = -amount
+	}
+
 	return Transaction{
 		id:        id,
 		accountID: accID,
@@ -49,10 +53,7 @@ func (t Transaction) Operation() Operation {
 
 // Amount returns the amount property
 func (t Transaction) Amount() float64 {
-	if t.operation.opType == Credit {
-		return t.amount
-	}
-	return -t.amount
+	return t.amount
 }
 
 // CreatedAt returns the createdAt property

@@ -8,25 +8,14 @@ import (
 // Error defines the structure of success for http responses
 type Error struct {
 	statusCode int
-	Errors     []map[string]string `json:"errors,omitempty"`
-	Error      string              `json:"error,omitempty"`
+	Errors     []string `json:"errors,omitempty"`
 }
 
-// NewError creates new Success
-func NewError(err error, status int) *Error {
+// NewError creates new Error
+func NewError(msg []string, status int) *Error {
 	return &Error{
 		statusCode: status,
-		Error:      err.Error(),
-	}
-}
-
-func NewErrors(errs map[string]string, status int) *Error {
-	var errors = make([]map[string]string, 0)
-	errors = append(errors, errs)
-
-	return &Error{
-		statusCode: status,
-		Errors:     errors,
+		Errors:     msg,
 	}
 }
 

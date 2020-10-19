@@ -39,7 +39,7 @@ type (
 	}
 
 	createAccountInteractor struct {
-		repo       domain.CreateAccountRepository
+		repo       domain.AccountCreator
 		pre        CreateAccountPresenter
 		ctxTimeout time.Duration
 	}
@@ -47,7 +47,7 @@ type (
 
 // NewCreateAccountInteractor creates new createAccountInteractor with its dependencies
 func NewCreateAccountInteractor(
-	repo domain.CreateAccountRepository,
+	repo domain.AccountCreator,
 	pre CreateAccountPresenter,
 	ctxTimeout time.Duration,
 ) CreateAccountUseCase {

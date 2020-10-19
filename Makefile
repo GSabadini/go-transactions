@@ -16,6 +16,11 @@ test:
 test-local:
 	go test -cover ./...
 
+coverage:
+	${DOCKER_RUN} go test -coverprofile coverage.out ./... && \
+	go tool cover -html=coverage.out -o coverage.html && \
+	xdg-open ./coverage.html
+
 up:
 	docker-compose up -d
 

@@ -33,7 +33,7 @@ func (s stubFindAccountByIDPresenter) Output(account domain.Account) FindAccount
 
 func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 	type fields struct {
-		repo       domain.FindAccountByIDRepository
+		repo       domain.AccountFinder
 		pre        FindAccountByIDPresenter
 		ctxTimeout time.Duration
 	}

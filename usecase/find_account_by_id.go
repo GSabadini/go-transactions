@@ -36,7 +36,7 @@ type (
 	}
 
 	findAccountByIDInteractor struct {
-		repo       domain.FindAccountByIDRepository
+		repo       domain.AccountFinder
 		pre        FindAccountByIDPresenter
 		ctxTimeout time.Duration
 	}
@@ -44,7 +44,7 @@ type (
 
 // NewFindAccountByIDInteractor creates new findAccountByIDInteractor with its dependencies
 func NewFindAccountByIDInteractor(
-	repo domain.FindAccountByIDRepository,
+	repo domain.AccountFinder,
 	pre FindAccountByIDPresenter,
 	ctxTimeout time.Duration,
 ) FindAccountByIDUseCase {
