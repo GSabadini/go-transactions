@@ -4,7 +4,7 @@
     <img alt="Build" src="https://goreportcard.com/badge/github.com/GSabadini/go-transactions" />
   </a>
   <a href="https://github.com/GSabadini/go-transactions/actions" target="_blank">
-    <img alt="Build" src="https://github.com/GSabadini/go-transactions/workflows/Build%20and%20Testing/badge.svg?branch=master" />
+    <img alt="Build" src="https://github.com/GSabadini/go-transactions/workflows/Build%20and%20Testing/badge.svg" />
   </a>
 </p>
 
