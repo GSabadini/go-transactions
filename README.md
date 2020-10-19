@@ -1,4 +1,12 @@
 <h1 align="center">Go Transactions :bank:</h1>
+<p>
+  <a href="https://goreportcard.com/report/github.com/GSabadini/go-transactions" target="_blank">
+    <img alt="Build" src="https://goreportcard.com/badge/github.com/GSabadini/go-transactions" />
+  </a>
+  <a href="https://github.com/GSabadini/go-transactions/actions" target="_blank">
+    <img alt="Build" src="https://github.com/GSabadini/go-transactions/workflows/Build%20and%20Testing/badge.svg?branch=master" />
+  </a>
+</p>
 
 ## Arquitetura
 -  A arquitetura é baseada nos conceitos de Clean Architecture propostas por Uncle Bob. Para mais detalhes clique [aqui](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).

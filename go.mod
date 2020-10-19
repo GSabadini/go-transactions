@@ -1,9 +1,8 @@
 module github.com/GSabadini/go-transactions
 
-go 1.13
+go 1.14
 
 require (
-	github.com/go-ozzo/ozzo-validation/v4 v4.2.2
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.4.0
