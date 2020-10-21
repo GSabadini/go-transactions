@@ -81,6 +81,7 @@ make down
 | :----------: | :----------: | :--------: | :---------:
 | `document`   | `Sim`        | `Object`   |           |
 | `document.number`     | `Sim`        | `String`   | `Máximo 30 caracteres` |
+| `available_credit_limit     | `Sim`        | `String`   |  |
 
 `Request`
 ```bash
