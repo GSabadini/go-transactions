@@ -55,6 +55,7 @@ func Test_findAccountByIDInteractor_Execute(t *testing.T) {
 					result: domain.NewAccount(
 						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 						"12345678900",
+						100,
 						time.Time{},
 					),
 					err: nil,

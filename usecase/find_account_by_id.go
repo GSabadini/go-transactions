@@ -25,9 +25,10 @@ type (
 
 	// Output data
 	FindAccountByIDOutput struct {
-		ID        string                        `json:"id"`
-		Document  FindAccountByIDDocumentOutput `json:"document"`
-		CreatedAt string                        `json:"created_at"`
+		ID                   string                        `json:"id"`
+		AvailableCreditLimit float64                       `json:"available_credit_limit"`
+		Document             FindAccountByIDDocumentOutput `json:"document"`
+		CreatedAt            string                        `json:"created_at"`
 	}
 
 	// Output data

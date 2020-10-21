@@ -24,11 +24,13 @@ func Test_findAccountByIDPresenter_Output(t *testing.T) {
 				account: domain.NewAccount(
 					"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 					"12345678900",
+					100,
 					time.Time{},
 				),
 			},
 			want: usecase.FindAccountByIDOutput{
-				ID: "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+				ID:                   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+				AvailableCreditLimit: 100,
 				Document: usecase.FindAccountByIDDocumentOutput{
 					Number: "12345678900",
 				},

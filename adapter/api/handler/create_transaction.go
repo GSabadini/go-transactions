@@ -56,6 +56,9 @@ func (c CreateTransactionHandler) Handle(w http.ResponseWriter, r *http.Request)
 		case domain.ErrOperationInvalid:
 			response.NewError([]string{err.Error()}, http.StatusUnprocessableEntity).Send(w)
 			return
+		case domain.ErrAccountInsufficientCreditLimit:
+			response.NewError([]string{err.Error()}, http.StatusUnprocessableEntity).Send(w)
+			return
 		default:
 			response.NewError([]string{err.Error()}, http.StatusInternalServerError).Send(w)
 			return

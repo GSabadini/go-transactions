@@ -7,8 +7,9 @@ import (
 )
 
 var (
-	ErrAccountAlreadyExists = errors.New("account already exists")
-	ErrAccountNotFound      = errors.New("account not found")
+	ErrAccountAlreadyExists           = errors.New("account already exists")
+	ErrAccountNotFound                = errors.New("account not found")
+	ErrAccountInsufficientCreditLimit = errors.New("credit limit insufficient")
 )
 
 type (
@@ -22,11 +23,17 @@ type (
 		FindByID(context.Context, string) (Account, error)
 	}
 
+	// AccountFinder defines the search operation for a account entity
+	AccountUpdater interface {
+		UpdateCreditLimit(context.Context, string, float64) error
+	}
+
 	// Account defines the account entity
 	Account struct {
-		id        string
-		document  Document
-		createdAt time.Time
+		id                   string
+		document             Document
+		availableCreditLimit float64
+		createdAt            time.Time
 	}
 
 	// Document defines document property
@@ -36,14 +43,39 @@ type (
 )
 
 // NewAccount creates new Account
-func NewAccount(ID string, docNumber string, createdAt time.Time) Account {
+func NewAccount(ID string, docNumber string, avCreditLimit float64, createdAt time.Time) Account {
 	return Account{
 		id: ID,
 		document: Document{
 			number: docNumber,
 		},
-		createdAt: createdAt,
+		availableCreditLimit: avCreditLimit,
+		createdAt:            createdAt,
 	}
+}
+
+// PaymentOperation
+func (a *Account) PaymentOperation(amount float64, opType string) error {
+	if opType == Debit {
+		return a.Withdraw(amount)
+	}
+
+	a.Deposit(amount)
+	return nil
+}
+
+// Deposit
+func (a *Account) Deposit(amount float64) {
+	a.availableCreditLimit += amount
+}
+
+// Withdraw
+func (a *Account) Withdraw(amount float64) error {
+	if a.availableCreditLimit < amount {
+		return ErrAccountInsufficientCreditLimit
+	}
+	a.availableCreditLimit -= amount
+	return nil
 }
 
 // ID returns the id property
@@ -59,6 +91,11 @@ func (a Account) Document() Document {
 // CreatedAt returns the createdAt property
 func (a Account) CreatedAt() time.Time {
 	return a.createdAt
+}
+
+// AvailableCreditLimit returns the availableCreditLimit property
+func (a Account) AvailableCreditLimit() float64 {
+	return a.availableCreditLimit
 }
 
 // Number returns the number property

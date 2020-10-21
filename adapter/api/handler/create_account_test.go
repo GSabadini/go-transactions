@@ -48,7 +48,8 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 			fields: fields{
 				uc: stubCreateAccountUseCase{
 					result: usecase.CreateAccountOutput{
-						ID: "cfd3c0e0-cfa7-4220-8e62-069657874aba",
+						ID:                   "cfd3c0e0-cfa7-4220-8e62-069657874aba",
+						AvailableCreditLimit: 100,
 						Document: usecase.CreateAccountDocumentOutput{
 							Number: "12345678900",
 						},
@@ -59,8 +60,8 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 				log:       logFake,
 				validator: v,
 			},
-			rawPayload:     []byte(`{"document": {"number": "12345678900"}}`),
-			wantBody:       `{"id":"cfd3c0e0-cfa7-4220-8e62-069657874aba","document":{"number":"12345678900"},"created_at":"2020-10-16T17:50:39Z"}`,
+			rawPayload:     []byte(`{"document": {"number": "12345678900"}, "available_credit_limit": 100}`),
+			wantBody:       `{"id":"cfd3c0e0-cfa7-4220-8e62-069657874aba","available_credit_limit":100,"document":{"number":"12345678900"},"created_at":"2020-10-16T17:50:39Z"}`,
 			wantStatusCode: http.StatusCreated,
 		},
 		{
@@ -73,7 +74,7 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 				log:       logFake,
 				validator: v,
 			},
-			rawPayload:     []byte(`{"document": {"number": "12345678900"}}`),
+			rawPayload:     []byte(`{"document": {"number": "12345678900"}, "available_credit_limit": 100}`),
 			wantBody:       `{"errors":["account already exists"]}`,
 			wantStatusCode: http.StatusUnprocessableEntity,
 		},
@@ -87,8 +88,36 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 				log:       logFake,
 				validator: v,
 			},
-			rawPayload:     []byte(`{"document": {}}`),
+			rawPayload:     []byte(`{"document": {}, "available_credit_limit": 100}`),
 			wantBody:       `{"errors":["number is a required field"]}`,
+			wantStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "Error required field",
+			fields: fields{
+				uc: stubCreateAccountUseCase{
+					result: usecase.CreateAccountOutput{},
+					err:    nil,
+				},
+				log:       logFake,
+				validator: v,
+			},
+			rawPayload:     []byte(`{"document": {"number": "123456"}}`),
+			wantBody:       `{"errors":["available_credit_limit is a required field"]}`,
+			wantStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "Error required field",
+			fields: fields{
+				uc: stubCreateAccountUseCase{
+					result: usecase.CreateAccountOutput{},
+					err:    nil,
+				},
+				log:       logFake,
+				validator: v,
+			},
+			rawPayload:     []byte(`{"document": {"number": "123456"}, "available_credit_limit": -100}`),
+			wantBody:       `{"errors":["available_credit_limit must be greater than 0"]}`,
 			wantStatusCode: http.StatusBadRequest,
 		},
 		{
@@ -101,7 +130,7 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 				log:       logFake,
 				validator: v,
 			},
-			rawPayload:     []byte(`{"document": {"number": "1234567899876545646455432103215648721212156451546456451205554564564564564"}}`),
+			rawPayload:     []byte(`{"document": {"number": "1234567899876545646455432103215648721212156451546456451205554564564564564"}, "available_credit_limit": 100}`),
 			wantBody:       `{"errors":["number must be a maximum of 30 characters in length"]}`,
 			wantStatusCode: http.StatusBadRequest,
 		},
@@ -115,7 +144,7 @@ func TestCreateAccountHandler_Handle(t *testing.T) {
 				log:       logFake,
 				validator: v,
 			},
-			rawPayload:     []byte(`{"document": {"number": "12345678900"}}`),
+			rawPayload:     []byte(`{"document": {"number": "12345678900"}, "available_credit_limit": 100}`),
 			wantBody:       `{"errors":["db_error"]}`,
 			wantStatusCode: http.StatusInternalServerError,
 		},

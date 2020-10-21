@@ -1,6 +1,7 @@
 CREATE TABLE accounts (
     id VARCHAR(36) PRIMARY KEY UNIQUE,
     document_number VARCHAR(50) NOT NULL UNIQUE,
+    available_credit_limit DOUBLE PRECISION NOT NULL,
     created_at TIMESTAMP
 );
 

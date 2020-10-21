@@ -19,6 +19,7 @@ type (
 		Document struct {
 			Number string `json:"number" validate:"required,max=30"`
 		}
+		AvailableCreditLimit float64 `json:"available_credit_limit" validate:"required,gt=0"`
 	}
 
 	// Output port
@@ -28,9 +29,10 @@ type (
 
 	// Output data
 	CreateAccountOutput struct {
-		ID        string                      `json:"id"`
-		Document  CreateAccountDocumentOutput `json:"document"`
-		CreatedAt string                      `json:"created_at"`
+		ID                   string                      `json:"id"`
+		AvailableCreditLimit float64                     `json:"available_credit_limit"`
+		Document             CreateAccountDocumentOutput `json:"document"`
+		CreatedAt            string                      `json:"created_at"`
 	}
 
 	// Output data
@@ -66,6 +68,7 @@ func (c createAccountInteractor) Execute(ctx context.Context, i CreateAccountInp
 	account, err := c.repo.Create(ctx, domain.NewAccount(
 		uuid.New().String(),
 		i.Document.Number,
+		i.AvailableCreditLimit,
 		time.Now(),
 	))
 	if err != nil {

@@ -24,9 +24,10 @@ func NewCreateAccountRepository(db *sql.DB) domain.AccountCreator {
 func (c createAccountRepository) Create(ctx context.Context, account domain.Account) (domain.Account, error) {
 	if _, err := c.db.ExecContext(
 		ctx,
-		`INSERT INTO accounts (id, document_number, created_at) VALUES (?, ?, ?)`,
+		`INSERT INTO accounts (id, document_number, available_credit_limit, created_at) VALUES (?, ?, ?, ?)`,
 		account.ID(),
 		account.Document().Number(),
+		account.AvailableCreditLimit(),
 		account.CreatedAt(),
 	); err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {

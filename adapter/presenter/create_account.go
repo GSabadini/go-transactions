@@ -21,6 +21,7 @@ func (c createAccountPresenter) Output(account domain.Account) usecase.CreateAcc
 		Document: usecase.CreateAccountDocumentOutput{
 			Number: account.Document().Number(),
 		},
-		CreatedAt: account.CreatedAt().Format(time.RFC3339),
+		AvailableCreditLimit: account.AvailableCreditLimit(),
+		CreatedAt:            account.CreatedAt().Format(time.RFC3339),
 	}
 }

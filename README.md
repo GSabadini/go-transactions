@@ -89,7 +89,8 @@ curl -i --request POST 'http://localhost:3001/v1/accounts' \
 --data-raw '{
     "document": {
         "number": "12345678900"
-    }
+    },
+    "available_credit_limit": 100
 }'
 ```
 
@@ -135,7 +136,7 @@ curl -i --request GET 'http://localhost:3001/v1/accounts/{:acountId}'
 curl --location --request POST 'http://localhost:3001/v1/transactions' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "account_id": "1a4028ea-3c18-4714-b650-d1058ae7a053",
+    "account_id": "deeb291c-18a0-45c3-b28b-df7ebcabe4f8",
     "operation_id": "3f973e5b-cb9f-475c-b27d-8f855a0b90b0",
     "amount": 100
 }'

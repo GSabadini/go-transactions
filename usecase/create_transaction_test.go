@@ -35,13 +35,32 @@ func (s stubCreateTransactionPresenter) Output(transaction domain.Transaction) C
 	}
 }
 
+type stubFindUserByRepo struct {
+	result domain.Account
+	err    error
+}
+
+func (s stubFindUserByRepo) FindByID(_ context.Context, _ string) (domain.Account, error) {
+	return s.result, s.err
+}
+
+type stubUpdateCreditLimitRepo struct {
+	err error
+}
+
+func (s stubUpdateCreditLimitRepo) UpdateCreditLimit(_ context.Context, _ string, _ float64) error {
+	return s.err
+}
+
 func Test_createTransactionInteractor_Execute(t *testing.T) {
 	var opCompraAVista, _ = domain.NewOperation("fd426041-0648-40f6-9d04-5284295c5095")
 
 	type fields struct {
-		repo       domain.TransactionCreator
-		pre        CreateTransactionPresenter
-		ctxTimeout time.Duration
+		repo               domain.TransactionCreator
+		repoAccountFinder  domain.AccountFinder
+		repoAccountUpdater domain.AccountUpdater
+		pre                CreateTransactionPresenter
+		ctxTimeout         time.Duration
 	}
 	type args struct {
 		ctx context.Context
@@ -67,8 +86,18 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 					),
 					err: nil,
 				},
-				pre:        stubCreateTransactionPresenter{},
-				ctxTimeout: time.Second,
+				repoAccountFinder: stubFindUserByRepo{
+					result: domain.NewAccount(
+						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+						"12345678900",
+						100.25,
+						time.Time{},
+					),
+					err: nil,
+				},
+				repoAccountUpdater: stubUpdateCreditLimitRepo{err: nil},
+				pre:                stubCreateTransactionPresenter{},
+				ctxTimeout:         time.Second,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -92,14 +121,63 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "Error create transaction insufficient credit limit",
+			fields: fields{
+				repo: stubCreateTransactionRepo{
+					result: domain.NewTransaction(
+						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+						opCompraAVista,
+						100.25,
+						time.Time{},
+					),
+					err: nil,
+				},
+				repoAccountFinder: stubFindUserByRepo{
+					result: domain.NewAccount(
+						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+						"12345678900",
+						1,
+						time.Time{},
+					),
+					err: nil,
+				},
+				repoAccountUpdater: stubUpdateCreditLimitRepo{err: nil},
+				pre:                stubCreateTransactionPresenter{},
+				ctxTimeout:         time.Second,
+			},
+			args: args{
+				ctx: context.Background(),
+				i: CreateTransactionInput{
+					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+					OperationID: "fd426041-0648-40f6-9d04-5284295c5095",
+					Amount:      100.25,
+				},
+			},
+			want: CreateTransactionOutput{
+				CreatedAt: time.Time{}.String(),
+			},
+			wantErr: true,
+		},
+		{
 			name: "Error creating transaction with invalid operation",
 			fields: fields{
 				repo: stubCreateTransactionRepo{
 					result: domain.Transaction{},
 					err:    nil,
 				},
-				pre:        stubCreateTransactionPresenter{},
-				ctxTimeout: time.Second,
+				repoAccountFinder: stubFindUserByRepo{
+					result: domain.NewAccount(
+						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+						"12345678900",
+						1,
+						time.Time{},
+					),
+					err: nil,
+				},
+				repoAccountUpdater: stubUpdateCreditLimitRepo{err: nil},
+				pre:                stubCreateTransactionPresenter{},
+				ctxTimeout:         time.Second,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -121,8 +199,79 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 					result: domain.Transaction{},
 					err:    errors.New("db_error"),
 				},
-				pre:        stubCreateTransactionPresenter{},
-				ctxTimeout: time.Second,
+				repoAccountFinder: stubFindUserByRepo{
+					result: domain.NewAccount(
+						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+						"12345678900",
+						100.25,
+						time.Time{},
+					),
+					err: nil,
+				},
+				repoAccountUpdater: stubUpdateCreditLimitRepo{err: nil},
+				pre:                stubCreateTransactionPresenter{},
+				ctxTimeout:         time.Second,
+			},
+			args: args{
+				ctx: context.Background(),
+				i: CreateTransactionInput{
+					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+					OperationID: domain.CompraAVista,
+					Amount:      100.25,
+				},
+			},
+			want: CreateTransactionOutput{
+				CreatedAt: time.Time{}.String(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Error find account by id repository",
+			fields: fields{
+				repo: stubCreateTransactionRepo{
+					result: domain.Transaction{},
+					err:    nil,
+				},
+				repoAccountFinder: stubFindUserByRepo{
+					result: domain.Account{},
+					err:    errors.New("db_error"),
+				},
+				repoAccountUpdater: stubUpdateCreditLimitRepo{err: nil},
+				pre:                stubCreateTransactionPresenter{},
+				ctxTimeout:         time.Second,
+			},
+			args: args{
+				ctx: context.Background(),
+				i: CreateTransactionInput{
+					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+					OperationID: domain.CompraAVista,
+					Amount:      100.25,
+				},
+			},
+			want: CreateTransactionOutput{
+				CreatedAt: time.Time{}.String(),
+			},
+			wantErr: true,
+		},
+		{
+			name: "Error update credit limit by id repository",
+			fields: fields{
+				repo: stubCreateTransactionRepo{
+					result: domain.Transaction{},
+					err:    nil,
+				},
+				repoAccountFinder: stubFindUserByRepo{
+					result: domain.NewAccount(
+						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
+						"12345678900",
+						100.25,
+						time.Time{},
+					),
+					err: nil,
+				},
+				repoAccountUpdater: stubUpdateCreditLimitRepo{err: errors.New("db_error")},
+				pre:                stubCreateTransactionPresenter{},
+				ctxTimeout:         time.Second,
 			},
 			args: args{
 				ctx: context.Background(),
@@ -142,6 +291,8 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			interactor := NewCreateTransactionInteractor(
 				tt.fields.repo,
+				tt.fields.repoAccountFinder,
+				tt.fields.repoAccountUpdater,
 				tt.fields.pre,
 				tt.fields.ctxTimeout,
 			)

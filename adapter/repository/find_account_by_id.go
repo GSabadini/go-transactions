@@ -23,20 +23,21 @@ func NewAccountByIDRepository(db *sql.DB) domain.AccountFinder {
 // FindByID performs select into the database
 func (f findAccountByIDRepository) FindByID(ctx context.Context, ID string) (domain.Account, error) {
 	var (
-		id        string
-		docNumber string
-		createdAt time.Time
+		id            string
+		docNumber     string
+		avCreditLimit float64
+		createdAt     time.Time
 	)
 
 	err := f.db.QueryRowContext(
 		ctx,
 		"SELECT * FROM accounts WHERE id = ?",
 		ID,
-	).Scan(&id, &docNumber, &createdAt)
+	).Scan(&id, &docNumber, &avCreditLimit, &createdAt)
 	switch {
 	case err == sql.ErrNoRows:
 		return domain.Account{}, domain.ErrAccountNotFound
 	default:
-		return domain.NewAccount(id, docNumber, createdAt), errors.Wrap(err, errDatabase.Error())
+		return domain.NewAccount(id, docNumber, avCreditLimit, createdAt), errors.Wrap(err, errDatabase.Error())
 	}
 }

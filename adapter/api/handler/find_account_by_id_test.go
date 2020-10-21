@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/GSabadini/go-transactions/domain"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -12,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/GSabadini/go-transactions/domain"
 	"github.com/GSabadini/go-transactions/infrastructure/logger"
 	"github.com/GSabadini/go-transactions/usecase"
 	"github.com/gorilla/mux"
@@ -48,7 +48,8 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 			fields: fields{
 				uc: stubFindAccountByIDUseCase{
 					result: usecase.FindAccountByIDOutput{
-						ID: "cfd3c0e0-cfa7-4220-8e62-069657874aba",
+						ID:                   "cfd3c0e0-cfa7-4220-8e62-069657874aba",
+						AvailableCreditLimit: 100,
 						Document: usecase.FindAccountByIDDocumentOutput{
 							Number: "123456789000",
 						},
@@ -61,7 +62,7 @@ func TestFindAccountByIDHandler_Handle(t *testing.T) {
 			args: args{
 				ID: "cfd3c0e0-cfa7-4220-8e62-069657874aba",
 			},
-			wantBody:       `{"id":"cfd3c0e0-cfa7-4220-8e62-069657874aba","document":{"number":"123456789000"},"created_at":"0001-01-01 00:00:00 +0000 UTC"}`,
+			wantBody:       `{"id":"cfd3c0e0-cfa7-4220-8e62-069657874aba","available_credit_limit":100,"document":{"number":"123456789000"},"created_at":"0001-01-01 00:00:00 +0000 UTC"}`,
 			wantStatusCode: http.StatusOK,
 		},
 		{

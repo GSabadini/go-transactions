@@ -122,6 +122,20 @@ func TestCreateTransactionHandler_Handle(t *testing.T) {
 			wantBody:       `{"errors":["db_error"]}`,
 			wantStatusCode: http.StatusInternalServerError,
 		},
+		{
+			name: "Error credit limit insufficient",
+			fields: fields{
+				uc: stubCreateTransactionUseCase{
+					result: usecase.CreateTransactionOutput{},
+					err:    domain.ErrAccountInsufficientCreditLimit,
+				},
+				log:       logFake,
+				validator: v,
+			},
+			rawPayload:     []byte(`{"account_id": "92c82203-cdba-4932-9860-bce2e6140267","operation_id": "fd426041-0648-40f6-9d04-5284295c5095","amount": 10.74}`),
+			wantBody:       `{"errors":["credit limit insufficient"]}`,
+			wantStatusCode: http.StatusUnprocessableEntity,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -43,22 +43,28 @@ type (
 	}
 
 	createTransactionInteractor struct {
-		repo       domain.TransactionCreator
-		pre        CreateTransactionPresenter
-		ctxTimeout time.Duration
+		repoTransactionCreator domain.TransactionCreator
+		repoAccountFinder      domain.AccountFinder
+		repoAccountUpdater     domain.AccountUpdater
+		pre                    CreateTransactionPresenter
+		ctxTimeout             time.Duration
 	}
 )
 
 // NewCreateTransactionInteractor creates new createTransactionInteractor with its dependencies
 func NewCreateTransactionInteractor(
-	repo domain.TransactionCreator,
+	repoTransactionCreator domain.TransactionCreator,
+	repoAccountFinder domain.AccountFinder,
+	repoAccountUpdater domain.AccountUpdater,
 	pre CreateTransactionPresenter,
 	ctxTimeout time.Duration,
 ) CreateTransactionUseCase {
 	return createTransactionInteractor{
-		repo:       repo,
-		pre:        pre,
-		ctxTimeout: ctxTimeout,
+		repoTransactionCreator: repoTransactionCreator,
+		repoAccountFinder:      repoAccountFinder,
+		repoAccountUpdater:     repoAccountUpdater,
+		pre:                    pre,
+		ctxTimeout:             ctxTimeout,
 	}
 }
 
@@ -72,7 +78,20 @@ func (c createTransactionInteractor) Execute(ctx context.Context, i CreateTransa
 		return c.pre.Output(domain.Transaction{}), err
 	}
 
-	transaction, err := c.repo.Create(ctx, domain.NewTransaction(
+	account, err := c.repoAccountFinder.FindByID(ctx, i.AccountID)
+	if err != nil {
+		return c.pre.Output(domain.Transaction{}), err
+	}
+
+	if err := account.PaymentOperation(i.Amount, op.Type()); err != nil {
+		return c.pre.Output(domain.Transaction{}), err
+	}
+
+	if err := c.repoAccountUpdater.UpdateCreditLimit(ctx, account.ID(), account.AvailableCreditLimit()); err != nil {
+		return c.pre.Output(domain.Transaction{}), err
+	}
+
+	transaction, err := c.repoTransactionCreator.Create(ctx, domain.NewTransaction(
 		uuid.New().String(),
 		i.AccountID,
 		op,

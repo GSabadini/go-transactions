@@ -84,6 +84,8 @@ func (a HTTPServer) findAccountByIDHandler() http.HandlerFunc {
 func (a HTTPServer) createTransactionHandler() http.HandlerFunc {
 	uc := usecase.NewCreateTransactionInteractor(
 		repository.NewCreateTransactionRepository(a.database),
+		repository.NewAccountByIDRepository(a.database),
+		repository.NewUpdateAccountCreditLimitRepository(a.database),
 		presenter.NewCreateTransactionPresenter(),
 		5*time.Second,
 	)
