@@ -102,6 +102,7 @@ curl -i --request POST 'http://localhost:3001/v1/accounts' \
     "document": {
         "number": "12345678900"
     },
+    "available_credit_limit": 100,
     "created_at": "2020-10-17T02:28:05Z"
 }
 ```
@@ -120,6 +121,7 @@ curl -i --request GET 'http://localhost:3001/v1/accounts/{:acountId}'
     "document": {
         "number": "12345678900"
     },
+    "available_credit_limit": 100,
     "created_at": "2020-10-17T02:28:05Z"
 }
 ```
