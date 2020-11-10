@@ -9,6 +9,7 @@ type (
 	// TransactionCreator defines the operation of creating a transaction entity
 	TransactionCreator interface {
 		Create(context.Context, Transaction) (Transaction, error)
+		WithTransaction(context.Context, func(context.Context) error) error
 	}
 
 	// Transaction defines the transaction entity
@@ -16,13 +17,14 @@ type (
 		id        string
 		accountID string
 		operation Operation
-		amount    float64
+		amount    int64
+		balance   int64
 		createdAt time.Time
 	}
 )
 
 // NewTransaction creates new Transaction
-func NewTransaction(id string, accID string, op Operation, amount float64, createdAt time.Time) Transaction {
+func NewTransaction(id string, accID string, op Operation, amount int64, balance int64, createdAt time.Time) Transaction {
 	if op.opType == Debit {
 		amount = -amount
 	}
@@ -32,6 +34,7 @@ func NewTransaction(id string, accID string, op Operation, amount float64, creat
 		accountID: accID,
 		operation: op,
 		amount:    amount,
+		balance:   balance,
 		createdAt: createdAt,
 	}
 }
@@ -52,8 +55,13 @@ func (t Transaction) Operation() Operation {
 }
 
 // Amount returns the amount property
-func (t Transaction) Amount() float64 {
+func (t Transaction) Amount() int64 {
 	return t.amount
+}
+
+// Balance returns the balance property
+func (t Transaction) Balance() int64 {
+	return t.balance
 }
 
 // CreatedAt returns the createdAt property

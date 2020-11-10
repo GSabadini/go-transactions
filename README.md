@@ -136,7 +136,7 @@ curl -i --request GET 'http://localhost:3001/v1/accounts/{:acountId}'
 
 `Request`
 ```bash
-curl --location --request POST 'http://localhost:3001/v1/transactions' \
+curl -i --request POST 'http://localhost:3001/v1/transactions' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "account_id": "deeb291c-18a0-45c3-b28b-df7ebcabe4f8",
@@ -149,17 +149,20 @@ curl --location --request POST 'http://localhost:3001/v1/transactions' \
 ```json
 {
     "id": "22985ca3-c777-4ab2-b433-ba3b6844578d",
-    "account_id": "1a4028ea-3c18-4714-b650-d1058ae7a053",
+    "account_id": "deeb291c-18a0-45c3-b28b-df7ebcabe4f8",
     "operation": {
-        "id": "fd426041-0648-40f6-9d04-5284295c5095",
-        "description": "COMPRA A VISTA",
+        "id": "3f973e5b-cb9f-475c-b27d-8f855a0b90b0",
+        "description": "SAQUE",
         "type": "DEBIT"
     },
     "amount": -100,
+    "balance": -100,
     "created_at": "2020-10-17T22:17:40Z"
 }
 ```
 
+## Regras
 
+- Todos os valores monetários são representados em centavos.
 
   

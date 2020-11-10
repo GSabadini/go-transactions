@@ -15,6 +15,14 @@ type stubCreateTransactionRepo struct {
 	err    error
 }
 
+func (s stubCreateTransactionRepo) WithTransaction(_ context.Context, fn func(context.Context) error) error {
+	if err := fn(context.Background()); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s stubCreateTransactionRepo) Create(_ context.Context, _ domain.Transaction) (domain.Transaction, error) {
 	return s.result, s.err
 }
@@ -31,6 +39,7 @@ func (s stubCreateTransactionPresenter) Output(transaction domain.Transaction) C
 			Type:        transaction.Operation().Type(),
 		},
 		Amount:    transaction.Amount(),
+		Balance:   transaction.Balance(),
 		CreatedAt: transaction.CreatedAt().String(),
 	}
 }
@@ -48,7 +57,7 @@ type stubUpdateCreditLimitRepo struct {
 	err error
 }
 
-func (s stubUpdateCreditLimitRepo) UpdateCreditLimit(_ context.Context, _ string, _ float64) error {
+func (s stubUpdateCreditLimitRepo) UpdateCreditLimit(_ context.Context, _ string, _ int64) error {
 	return s.err
 }
 
@@ -81,7 +90,8 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 						opCompraAVista,
-						100.25,
+						10025,
+						0,
 						time.Time{},
 					),
 					err: nil,
@@ -90,7 +100,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 					result: domain.NewAccount(
 						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 						"12345678900",
-						100.25,
+						10025,
 						time.Time{},
 					),
 					err: nil,
@@ -104,7 +114,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 					OperationID: "fd426041-0648-40f6-9d04-5284295c5095",
-					Amount:      100.25,
+					Amount:      10025,
 				},
 			},
 			want: CreateTransactionOutput{
@@ -115,7 +125,8 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 					Description: "COMPRA A VISTA",
 					Type:        domain.Debit,
 				},
-				Amount:    -100.25,
+				Amount:    -10025,
+				Balance:   0,
 				CreatedAt: time.Time{}.String(),
 			},
 			wantErr: false,
@@ -128,7 +139,8 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 						opCompraAVista,
-						100.25,
+						10025,
+						10025,
 						time.Time{},
 					),
 					err: nil,
@@ -151,7 +163,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 					OperationID: "fd426041-0648-40f6-9d04-5284295c5095",
-					Amount:      100.25,
+					Amount:      10025,
 				},
 			},
 			want: CreateTransactionOutput{
@@ -184,7 +196,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 					OperationID: "invalid operation",
-					Amount:      100.25,
+					Amount:      10025,
 				},
 			},
 			want: CreateTransactionOutput{
@@ -203,7 +215,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 					result: domain.NewAccount(
 						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 						"12345678900",
-						100.25,
+						10025,
 						time.Time{},
 					),
 					err: nil,
@@ -217,7 +229,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 					OperationID: domain.CompraAVista,
-					Amount:      100.25,
+					Amount:      10025,
 				},
 			},
 			want: CreateTransactionOutput{
@@ -245,7 +257,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 					OperationID: domain.CompraAVista,
-					Amount:      100.25,
+					Amount:      10025,
 				},
 			},
 			want: CreateTransactionOutput{
@@ -264,7 +276,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 					result: domain.NewAccount(
 						"fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 						"12345678900",
-						100.25,
+						10025,
 						time.Time{},
 					),
 					err: nil,
@@ -278,7 +290,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 					OperationID: domain.CompraAVista,
-					Amount:      100.25,
+					Amount:      10025,
 				},
 			},
 			want: CreateTransactionOutput{

@@ -10,13 +10,14 @@ func TestTransaction_Amount(t *testing.T) {
 		id        string
 		accountID string
 		operation Operation
-		amount    float64
+		amount    int64
+		balance   int64
 		createdAt time.Time
 	}
 	tests := []struct {
 		name   string
 		fields fields
-		want   float64
+		want   int64
 	}{
 		{
 			name: "Return amount operation type Debit",
@@ -28,10 +29,10 @@ func TestTransaction_Amount(t *testing.T) {
 					description: "COMPRA A VISTA",
 					opType:      Debit,
 				},
-				amount:    100.24,
+				amount:    10024,
 				createdAt: time.Time{},
 			},
-			want: -100.24,
+			want: -10024,
 		},
 		{
 			name: "Return amount operation type Credit",
@@ -43,10 +44,10 @@ func TestTransaction_Amount(t *testing.T) {
 					description: "PAGAMENTO",
 					opType:      Credit,
 				},
-				amount:    100.24,
+				amount:    10024,
 				createdAt: time.Time{},
 			},
-			want: 100.24,
+			want: 10024,
 		},
 	}
 	for _, tt := range tests {
@@ -56,6 +57,7 @@ func TestTransaction_Amount(t *testing.T) {
 				tt.fields.accountID,
 				tt.fields.operation,
 				tt.fields.amount,
+				tt.fields.balance,
 				tt.fields.createdAt,
 			)
 			if got := transaction.Amount(); got != tt.want {

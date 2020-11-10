@@ -22,14 +22,23 @@ func NewAccountByIDRepository(db *sql.DB) domain.AccountFinder {
 
 // FindByID performs select into the database
 func (f findAccountByIDRepository) FindByID(ctx context.Context, ID string) (domain.Account, error) {
+	tx, ok := ctx.Value("TransactionContextKey").(*sql.Tx)
+	if !ok {
+		var err error
+		tx, err = f.db.BeginTx(ctx, nil)
+		if err != nil {
+			return domain.Account{}, errors.Wrap(err, errDatabase.Error())
+		}
+	}
+
 	var (
 		id            string
 		docNumber     string
-		avCreditLimit float64
+		avCreditLimit int64
 		createdAt     time.Time
 	)
 
-	err := f.db.QueryRowContext(
+	err := tx.QueryRowContext(
 		ctx,
 		"SELECT * FROM accounts WHERE id = ?",
 		ID,

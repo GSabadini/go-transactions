@@ -25,14 +25,14 @@ type (
 
 	// AccountFinder defines the search operation for a account entity
 	AccountUpdater interface {
-		UpdateCreditLimit(context.Context, string, float64) error
+		UpdateCreditLimit(context.Context, string, int64) error
 	}
 
 	// Account defines the account entity
 	Account struct {
 		id                   string
 		document             Document
-		availableCreditLimit float64
+		availableCreditLimit int64
 		createdAt            time.Time
 	}
 
@@ -43,7 +43,7 @@ type (
 )
 
 // NewAccount creates new Account
-func NewAccount(ID string, docNumber string, avCreditLimit float64, createdAt time.Time) Account {
+func NewAccount(ID string, docNumber string, avCreditLimit int64, createdAt time.Time) Account {
 	return Account{
 		id: ID,
 		document: Document{
@@ -55,7 +55,7 @@ func NewAccount(ID string, docNumber string, avCreditLimit float64, createdAt ti
 }
 
 // PaymentOperation
-func (a *Account) PaymentOperation(amount float64, opType string) error {
+func (a *Account) PaymentOperation(amount int64, opType string) error {
 	if opType == Debit {
 		return a.Withdraw(amount)
 	}
@@ -65,12 +65,12 @@ func (a *Account) PaymentOperation(amount float64, opType string) error {
 }
 
 // Deposit
-func (a *Account) Deposit(amount float64) {
+func (a *Account) Deposit(amount int64) {
 	a.availableCreditLimit += amount
 }
 
 // Withdraw
-func (a *Account) Withdraw(amount float64) error {
+func (a *Account) Withdraw(amount int64) error {
 	if a.availableCreditLimit < amount {
 		return ErrAccountInsufficientCreditLimit
 	}
@@ -94,7 +94,7 @@ func (a Account) CreatedAt() time.Time {
 }
 
 // AvailableCreditLimit returns the availableCreditLimit property
-func (a Account) AvailableCreditLimit() float64 {
+func (a Account) AvailableCreditLimit() int64 {
 	return a.availableCreditLimit
 }
 

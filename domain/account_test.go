@@ -9,17 +9,17 @@ func TestAccount_Deposit(t *testing.T) {
 	type fields struct {
 		id                   string
 		document             Document
-		availableCreditLimit float64
+		availableCreditLimit int64
 		createdAt            time.Time
 	}
 	type args struct {
-		amount float64
+		amount int64
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		args   args
-		want   float64
+		want   int64
 	}{
 		{
 			name: "Successful depositing amount",
@@ -62,18 +62,18 @@ func TestAccount_PaymentOperation(t *testing.T) {
 	type fields struct {
 		id                   string
 		document             Document
-		availableCreditLimit float64
+		availableCreditLimit int64
 		createdAt            time.Time
 	}
 	type args struct {
-		amount float64
+		amount int64
 		opType string
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    float64
+		want    int64
 		wantErr bool
 	}{
 		{
@@ -143,17 +143,17 @@ func TestAccount_Withdraw(t *testing.T) {
 	type fields struct {
 		id                   string
 		document             Document
-		availableCreditLimit float64
+		availableCreditLimit int64
 		createdAt            time.Time
 	}
 	type args struct {
-		amount float64
+		amount int64
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    float64
+		want    int64
 		wantErr bool
 	}{
 		{

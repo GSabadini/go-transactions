@@ -16,9 +16,9 @@ type (
 
 	// Input data
 	CreateTransactionInput struct {
-		AccountID   string  `json:"account_id" validate:"required"`
-		OperationID string  `json:"operation_id" validate:"required"`
-		Amount      float64 `json:"amount" validate:"required,gt=0"`
+		AccountID   string `json:"account_id" validate:"required"`
+		OperationID string `json:"operation_id" validate:"required"`
+		Amount      int64  `json:"amount" validate:"required,gt=0"`
 	}
 
 	// Output port
@@ -31,7 +31,8 @@ type (
 		ID        string                           `json:"id"`
 		AccountID string                           `json:"account_id"`
 		Operation CreateTransactionOperationOutput `json:"operation"`
-		Amount    float64                          `json:"amount"`
+		Amount    int64                            `json:"amount"`
+		Balance   int64                            `json:"balance"`
 		CreatedAt string                           `json:"created_at"`
 	}
 
@@ -73,31 +74,47 @@ func (c createTransactionInteractor) Execute(ctx context.Context, i CreateTransa
 	ctx, cancel := context.WithTimeout(ctx, c.ctxTimeout)
 	defer cancel()
 
+	var (
+		account     domain.Account
+		transaction domain.Transaction
+		err         error
+	)
+
 	op, err := domain.NewOperation(i.OperationID)
 	if err != nil {
 		return c.pre.Output(domain.Transaction{}), err
 	}
 
-	account, err := c.repoAccountFinder.FindByID(ctx, i.AccountID)
-	if err != nil {
-		return c.pre.Output(domain.Transaction{}), err
-	}
+	err = c.repoTransactionCreator.WithTransaction(ctx, func(ctxTx context.Context) error {
+		account, err = c.repoAccountFinder.FindByID(ctxTx, i.AccountID)
+		if err != nil {
+			return err
+		}
 
-	if err := account.PaymentOperation(i.Amount, op.Type()); err != nil {
-		return c.pre.Output(domain.Transaction{}), err
-	}
+		if err = account.PaymentOperation(i.Amount, op.Type()); err != nil {
+			return err
+		}
 
-	if err := c.repoAccountUpdater.UpdateCreditLimit(ctx, account.ID(), account.AvailableCreditLimit()); err != nil {
-		return c.pre.Output(domain.Transaction{}), err
-	}
+		if err = c.repoAccountUpdater.UpdateCreditLimit(ctxTx, account.ID(), account.AvailableCreditLimit()); err != nil {
+			return err
+		}
 
-	transaction, err := c.repoTransactionCreator.Create(ctx, domain.NewTransaction(
-		uuid.New().String(),
-		i.AccountID,
-		op,
-		i.Amount,
-		time.Now(),
-	))
+		balance := i.Amount
+
+		transaction, err = c.repoTransactionCreator.Create(ctxTx, domain.NewTransaction(
+			uuid.New().String(),
+			i.AccountID,
+			op,
+			i.Amount,
+			balance,
+			time.Now(),
+		))
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
 		return c.pre.Output(domain.Transaction{}), err
 	}

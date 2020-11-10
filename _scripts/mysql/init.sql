@@ -1,7 +1,7 @@
 CREATE TABLE accounts (
     id VARCHAR(36) PRIMARY KEY UNIQUE,
     document_number VARCHAR(50) NOT NULL UNIQUE,
-    available_credit_limit DOUBLE PRECISION NOT NULL,
+    available_credit_limit INTEGER NOT NULL,
     created_at TIMESTAMP
 );
 
@@ -15,7 +15,8 @@ CREATE TABLE transactions (
     id VARCHAR(36) PRIMARY KEY UNIQUE,
     account_id VARCHAR(36) NOT NULL,
     operation_id VARCHAR(36) NOT NULL,
-    amount DOUBLE PRECISION NOT NULL,
+    amount INTEGER NOT NULL,
+    balance INTEGER NOT NULL,
     created_at TIMESTAMP,
 
     FOREIGN KEY (account_id) REFERENCES accounts(id),

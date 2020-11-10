@@ -19,7 +19,7 @@ type (
 		Document struct {
 			Number string `json:"number" validate:"required,max=30"`
 		}
-		AvailableCreditLimit float64 `json:"available_credit_limit" validate:"required,gt=0"`
+		AvailableCreditLimit int64 `json:"available_credit_limit" validate:"required,gt=0"`
 	}
 
 	// Output port
@@ -30,7 +30,7 @@ type (
 	// Output data
 	CreateAccountOutput struct {
 		ID                   string                      `json:"id"`
-		AvailableCreditLimit float64                     `json:"available_credit_limit"`
+		AvailableCreditLimit int64                       `json:"available_credit_limit"`
 		Document             CreateAccountDocumentOutput `json:"document"`
 		CreatedAt            string                      `json:"created_at"`
 	}

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+
 	"github.com/GSabadini/go-transactions/domain"
 	"github.com/pkg/errors"
 )
@@ -17,8 +18,17 @@ func NewUpdateAccountCreditLimitRepository(db *sql.DB) domain.AccountUpdater {
 	}
 }
 
-func (u updateAccountCreditLimitRepository) UpdateCreditLimit(ctx context.Context, ID string, amount float64) error {
-	if _, err := u.db.ExecContext(
+func (u updateAccountCreditLimitRepository) UpdateCreditLimit(ctx context.Context, ID string, amount int64) error {
+	tx, ok := ctx.Value("TransactionContextKey").(*sql.Tx)
+	if !ok {
+		var err error
+		tx, err = u.db.BeginTx(ctx, nil)
+		if err != nil {
+			return errors.Wrap(err, errDatabase.Error())
+		}
+	}
+
+	if _, err := tx.ExecContext(
 		ctx,
 		`UPDATE accounts SET available_credit_limit = ? WHERE id = ?`,
 		amount,

@@ -25,6 +25,7 @@ func (c createTransactionPresenter) Output(transaction domain.Transaction) useca
 			Type:        transaction.Operation().Type(),
 		},
 		Amount:    transaction.Amount(),
+		Balance:   transaction.Balance(),
 		CreatedAt: transaction.CreatedAt().Format(time.RFC3339),
 	}
 }
