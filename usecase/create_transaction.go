@@ -45,6 +45,8 @@ type (
 
 	createTransactionInteractor struct {
 		repoTransactionCreator domain.TransactionCreator
+		repoTransactionUpdater domain.TransactionUpdater
+		repoTransactionFinder domain.TransactionFinder
 		repoAccountFinder      domain.AccountFinder
 		repoAccountUpdater     domain.AccountUpdater
 		pre                    CreateTransactionPresenter
@@ -55,6 +57,8 @@ type (
 // NewCreateTransactionInteractor creates new createTransactionInteractor with its dependencies
 func NewCreateTransactionInteractor(
 	repoTransactionCreator domain.TransactionCreator,
+	repoTransactionUpdater domain.TransactionUpdater,
+	repoTransactionFinder domain.TransactionFinder,
 	repoAccountFinder domain.AccountFinder,
 	repoAccountUpdater domain.AccountUpdater,
 	pre CreateTransactionPresenter,
@@ -62,6 +66,8 @@ func NewCreateTransactionInteractor(
 ) CreateTransactionUseCase {
 	return createTransactionInteractor{
 		repoTransactionCreator: repoTransactionCreator,
+		repoTransactionUpdater: repoTransactionUpdater,
+		repoTransactionFinder:  repoTransactionFinder,
 		repoAccountFinder:      repoAccountFinder,
 		repoAccountUpdater:     repoAccountUpdater,
 		pre:                    pre,
@@ -99,7 +105,32 @@ func (c createTransactionInteractor) Execute(ctx context.Context, i CreateTransa
 			return err
 		}
 
-		balance := i.Amount
+		var balance = i.Amount
+		if op.Type() == domain.Credit {
+			transactions, err := c.repoTransactionFinder.FindByAccountID(ctx, i.AccountID)
+			if err != nil {
+				return err
+			}
+
+			for _, rebateTransaction := range transactions {
+				if balance == 0 {
+					break
+				}
+
+				var rebateBalance = rebateTransaction.Balance() + balance
+				if rebateBalance > 0 {
+					rebateBalance = 0
+				}
+				balance += rebateTransaction.Balance()
+				if balance < 0 {
+					balance = 0
+				}
+				err := c.repoTransactionUpdater.UpdateBalance(ctx, rebateTransaction.ID(), rebateBalance)
+				if err != nil {
+					return err
+				}
+			}
+		}
 
 		transaction, err = c.repoTransactionCreator.Create(ctxTx, domain.NewTransaction(
 			uuid.New().String(),

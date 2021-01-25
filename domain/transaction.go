@@ -12,6 +12,16 @@ type (
 		WithTransaction(context.Context, func(context.Context) error) error
 	}
 
+	// TransactionFinder defines the search operation for a transaction entity
+	TransactionFinder interface {
+		FindByAccountID(context.Context, string) ([]Transaction, error)
+	}
+
+	// TransactionUpdater defines the update operation for a transaction entity
+	TransactionUpdater interface {
+		UpdateBalance(context.Context, string, int64) error
+	}
+
 	// Transaction defines the transaction entity
 	Transaction struct {
 		id        string
@@ -26,7 +36,12 @@ type (
 // NewTransaction creates new Transaction
 func NewTransaction(id string, accID string, op Operation, amount int64, balance int64, createdAt time.Time) Transaction {
 	if op.opType == Debit {
-		amount = -amount
+		if amount < 0 && balance < 0 {
+
+		} else {
+			amount = -amount
+			balance = -balance
+		}
 	}
 
 	return Transaction{

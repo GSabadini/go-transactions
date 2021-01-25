@@ -45,9 +45,8 @@ func (a HTTPServer) Start() {
 
 	api.Handle("/accounts", a.createAccountHandler()).Methods(http.MethodPost)
 	api.Handle("/accounts/{account_id}", a.findAccountByIDHandler()).Methods(http.MethodGet)
-
+	api.Handle("/rebate-payments/{account_id}", a.rebatePaymentHandler()).Methods(http.MethodPut)
 	api.Handle("/transactions", a.createTransactionHandler()).Methods(http.MethodPost)
-
 	api.HandleFunc("/health", healthCheck).Methods(http.MethodGet)
 
 	server := &http.Server{
@@ -59,6 +58,17 @@ func (a HTTPServer) Start() {
 
 	a.logger.Println("Starting HTTP Server in port:", os.Getenv("APP_PORT"))
 	a.logger.Fatal(server.ListenAndServe())
+}
+
+func (a HTTPServer) rebatePaymentHandler() http.HandlerFunc {
+	uc := usecase.NewRebatePaymentInteractor(
+		repository.NewUpdateTransactionBalanceRepository(a.database),
+		repository.NewFindTransactionByAccountIDRepository(a.database),
+		presenter.NewRebatePaymentPresenter(),
+		5*time.Second,
+	)
+
+	return handler.NewRebatePaymentHandler(uc, a.logger).Handle
 }
 
 func (a HTTPServer) createAccountHandler() http.HandlerFunc {
@@ -73,7 +83,7 @@ func (a HTTPServer) createAccountHandler() http.HandlerFunc {
 
 func (a HTTPServer) findAccountByIDHandler() http.HandlerFunc {
 	uc := usecase.NewFindAccountByIDInteractor(
-		repository.NewAccountByIDRepository(a.database),
+		repository.NewFindAccountByIDRepository(a.database),
 		presenter.NewFindAccountByIDPresenter(),
 		5*time.Second,
 	)
@@ -84,7 +94,9 @@ func (a HTTPServer) findAccountByIDHandler() http.HandlerFunc {
 func (a HTTPServer) createTransactionHandler() http.HandlerFunc {
 	uc := usecase.NewCreateTransactionInteractor(
 		repository.NewCreateTransactionRepository(a.database),
-		repository.NewAccountByIDRepository(a.database),
+		repository.NewUpdateTransactionBalanceRepository(a.database),
+		repository.NewFindTransactionByAccountIDRepository(a.database),
+		repository.NewFindAccountByIDRepository(a.database),
 		repository.NewUpdateAccountCreditLimitRepository(a.database),
 		presenter.NewCreateTransactionPresenter(),
 		5*time.Second,

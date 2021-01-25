@@ -46,6 +46,7 @@ func (c createTransactionRepository) Create(ctx context.Context, transaction dom
 	return transaction, nil
 }
 
+// WithTransaction executes a transaction with atomicity
 func (c createTransactionRepository) WithTransaction(ctx context.Context, fn func(ctxFn context.Context) error) error {
 	tx, err := c.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {

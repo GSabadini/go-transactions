@@ -13,7 +13,7 @@ ENV GO111MODULE=on \
 
 WORKDIR /build
 COPY . .
-RUN go mod download && go build -a --installsuffix cgo --ldflags="-s" -o main
+RUN go build -a --installsuffix cgo --ldflags="-s" -o main
 
 FROM scratch
 

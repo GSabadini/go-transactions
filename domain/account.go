@@ -23,7 +23,7 @@ type (
 		FindByID(context.Context, string) (Account, error)
 	}
 
-	// AccountFinder defines the search operation for a account entity
+	// AccountFinder defines the update operation for a account entity
 	AccountUpdater interface {
 		UpdateCreditLimit(context.Context, string, int64) error
 	}

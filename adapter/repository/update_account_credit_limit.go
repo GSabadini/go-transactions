@@ -12,12 +12,14 @@ type updateAccountCreditLimitRepository struct {
 	db *sql.DB
 }
 
+// NewUpdateAccountCreditLimitRepository creates new updateAccountCreditLimitRepository with its dependencies
 func NewUpdateAccountCreditLimitRepository(db *sql.DB) domain.AccountUpdater {
 	return updateAccountCreditLimitRepository{
 		db: db,
 	}
 }
 
+// UpdateCreditLimit performs update into the database
 func (u updateAccountCreditLimitRepository) UpdateCreditLimit(ctx context.Context, ID string, amount int64) error {
 	tx, ok := ctx.Value("TransactionContextKey").(*sql.Tx)
 	if !ok {

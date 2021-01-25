@@ -13,8 +13,8 @@ type findAccountByIDRepository struct {
 	db *sql.DB
 }
 
-// NewCreateAccountRepository creates new findAccountByIDRepository with its dependencies
-func NewAccountByIDRepository(db *sql.DB) domain.AccountFinder {
+// NewFindAccountByIDRepository creates new findAccountByIDRepository with its dependencies
+func NewFindAccountByIDRepository(db *sql.DB) domain.AccountFinder {
 	return findAccountByIDRepository{
 		db: db,
 	}
