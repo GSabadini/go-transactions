@@ -13,7 +13,7 @@ type findAccountByIDRepository struct {
 	db *sql.DB
 }
 
-// NewCreateAccountRepository creates new findAccountByIDRepository with its dependencies
+// NewAccountByIDRepository NewCreateAccountRepository creates new findAccountByIDRepository with its dependencies
 func NewAccountByIDRepository(db *sql.DB) domain.AccountFinder {
 	return findAccountByIDRepository{
 		db: db,
@@ -22,12 +22,12 @@ func NewAccountByIDRepository(db *sql.DB) domain.AccountFinder {
 
 // FindByID performs select into the database
 func (f findAccountByIDRepository) FindByID(ctx context.Context, ID string) (domain.Account, error) {
-	tx, ok := ctx.Value("TransactionContextKey").(*sql.Tx)
+	tx, ok := ctx.Value("TxKey").(*sql.Tx)
 	if !ok {
 		var err error
-		tx, err = f.db.BeginTx(ctx, nil)
+		tx, err = f.db.BeginTx(ctx, &sql.TxOptions{})
 		if err != nil {
-			return domain.Account{}, errors.Wrap(err, errDatabase.Error())
+			return domain.Account{}, errors.Wrap(err, errUnknown.Error())
 		}
 	}
 
@@ -47,6 +47,6 @@ func (f findAccountByIDRepository) FindByID(ctx context.Context, ID string) (dom
 	case err == sql.ErrNoRows:
 		return domain.Account{}, domain.ErrAccountNotFound
 	default:
-		return domain.NewAccount(id, docNumber, avCreditLimit, createdAt), errors.Wrap(err, errDatabase.Error())
+		return domain.NewAccount(id, docNumber, avCreditLimit, createdAt), errors.Wrap(err, errUnknown.Error())
 	}
 }

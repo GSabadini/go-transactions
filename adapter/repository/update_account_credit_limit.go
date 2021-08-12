@@ -19,12 +19,12 @@ func NewUpdateAccountCreditLimitRepository(db *sql.DB) domain.AccountUpdater {
 }
 
 func (u updateAccountCreditLimitRepository) UpdateCreditLimit(ctx context.Context, ID string, amount int64) error {
-	tx, ok := ctx.Value("TransactionContextKey").(*sql.Tx)
+	tx, ok := ctx.Value("TxKey").(*sql.Tx)
 	if !ok {
 		var err error
-		tx, err = u.db.BeginTx(ctx, nil)
+		tx, err = u.db.BeginTx(ctx, &sql.TxOptions{})
 		if err != nil {
-			return errors.Wrap(err, errDatabase.Error())
+			return errors.Wrap(err, errUnknown.Error())
 		}
 	}
 
@@ -34,7 +34,7 @@ func (u updateAccountCreditLimitRepository) UpdateCreditLimit(ctx context.Contex
 		amount,
 		ID,
 	); err != nil {
-		return errors.Wrap(err, errDatabase.Error())
+		return errors.Wrap(err, errUnknown.Error())
 	}
 
 	return nil

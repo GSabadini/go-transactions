@@ -36,7 +36,7 @@ func (c createAccountRepository) Create(ctx context.Context, account domain.Acco
 			}
 		}
 
-		return domain.Account{}, errors.Wrap(err, errDatabase.Error())
+		return domain.Account{}, errors.Wrap(err, errUnknown.Error())
 	}
 
 	return account, nil

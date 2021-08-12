@@ -18,7 +18,7 @@ func TestNewOperation(t *testing.T) {
 		{
 			name: "Create operation compra a vista",
 			args: args{
-				id: "fd426041-0648-40f6-9d04-5284295c5095",
+				id: "1",
 			},
 			want: Operation{
 				id:          CompraAVista,
@@ -30,7 +30,7 @@ func TestNewOperation(t *testing.T) {
 		{
 			name: "Create operation compra parcelada",
 			args: args{
-				id: "b03dcb59-006f-472f-a8f1-58651990dea6",
+				id: "2",
 			},
 			want: Operation{
 				id:          CompraParcelada,
@@ -42,7 +42,7 @@ func TestNewOperation(t *testing.T) {
 		{
 			name: "Create operation Saque",
 			args: args{
-				id: "3f973e5b-cb9f-475c-b27d-8f855a0b90b0",
+				id: "3",
 			},
 			want: Operation{
 				id:          Saque,
@@ -54,7 +54,7 @@ func TestNewOperation(t *testing.T) {
 		{
 			name: "Create operation Pagamento",
 			args: args{
-				id: "976f88ea-eb2f-4325-a106-26f9cb35810d",
+				id: "4",
 			},
 			want: Operation{
 				id:          Pagamento,

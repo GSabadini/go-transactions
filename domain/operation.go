@@ -6,10 +6,10 @@ const (
 	Debit  string = "DEBIT"
 	Credit string = "CREDIT"
 
-	CompraAVista    string = "fd426041-0648-40f6-9d04-5284295c5095"
-	CompraParcelada string = "b03dcb59-006f-472f-a8f1-58651990dea6"
-	Saque           string = "3f973e5b-cb9f-475c-b27d-8f855a0b90b0"
-	Pagamento       string = "976f88ea-eb2f-4325-a106-26f9cb35810d"
+	CompraAVista    string = "1"
+	CompraParcelada string = "2"
+	Saque           string = "3"
+	Pagamento       string = "4"
 )
 
 var (

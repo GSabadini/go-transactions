@@ -35,28 +35,24 @@ func TestCorrelationID_Execute(t *testing.T) {
 
 			rr := httptest.NewRecorder()
 
-			middlewareHandler := func(w http.ResponseWriter, r *http.Request) {
-				next := func(w http.ResponseWriter, r *http.Request) {}
+			next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				gotHeader := rr.Header().Get("X-Correlation-Id")
+				if gotHeader == "" {
+					t.Errorf("[TestCase '%s'] Header X-Correlation-Id undefined", tt.name)
+				}
 
-				NewCorrelationID().Execute(w, r, next)
-			}
+				if (tt.want != "") && (!strings.EqualFold(gotHeader, tt.want)) {
+					t.Errorf(
+						"[TestCase '%s'] Got header: '%v' | Want header: '%v'",
+						tt.name,
+						gotHeader,
+						tt.want,
+					)
+				}
+			})
 
-			handler := http.HandlerFunc(middlewareHandler)
+			handler := NewCorrelationID().Execute(next)
 			handler.ServeHTTP(rr, req)
-
-			gotHeader := rr.Header().Get("X-Correlation-Id")
-			if gotHeader == "" {
-				t.Errorf("[TestCase '%s'] Header X-Correlation-Id undefined", tt.name)
-			}
-
-			if (tt.want != "") && (!strings.EqualFold(gotHeader, tt.want)) {
-				t.Errorf(
-					"[TestCase '%s'] Got header: '%v' | Want header: '%v'",
-					tt.name,
-					gotHeader,
-					tt.want,
-				)
-			}
 		})
 	}
 }

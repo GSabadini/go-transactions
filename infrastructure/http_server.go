@@ -1,12 +1,16 @@
 package infrastructure
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/GSabadini/go-transactions/adapter/api/middleware"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/GSabadini/go-transactions/adapter/api/handler"
@@ -17,6 +21,7 @@ import (
 	"github.com/GSabadini/go-transactions/infrastructure/router"
 	"github.com/GSabadini/go-transactions/infrastructure/validation"
 	"github.com/GSabadini/go-transactions/usecase"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )
@@ -43,10 +48,16 @@ func NewHTTPServer() *HTTPServer {
 func (a HTTPServer) Start() {
 	api := a.router.PathPrefix("/v1").Subrouter()
 
+	api.Use(middleware.NewCorrelationID().Execute)
+
 	api.Handle("/accounts", a.createAccountHandler()).Methods(http.MethodPost)
 	api.Handle("/accounts/{account_id}", a.findAccountByIDHandler()).Methods(http.MethodGet)
 
 	api.Handle("/transactions", a.createTransactionHandler()).Methods(http.MethodPost)
+
+	//api.Handle("/cashout", a.createCashoutHandler()).Methods(http.MethodPost)
+	//api.Handle("/cashin", a.createTransactionHandler()).Methods(http.MethodPost)
+	//api.Handle("/peer-too-peer", a.createTransactionHandler()).Methods(http.MethodPost)
 
 	api.HandleFunc("/health", healthCheck).Methods(http.MethodGet)
 
@@ -57,8 +68,26 @@ func (a HTTPServer) Start() {
 		Handler:      a.router,
 	}
 
-	a.logger.Println("Starting HTTP Server in port:", os.Getenv("APP_PORT"))
-	a.logger.Fatal(server.ListenAndServe())
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		a.logger.Println("Starting HTTP Server in port:", os.Getenv("APP_PORT"))
+		a.logger.Fatal(server.ListenAndServe())
+	}()
+
+	<-stop
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer func() {
+		cancel()
+	}()
+
+	if err := server.Shutdown(ctx); err != nil {
+		a.logger.Fatal("Server Shutdown Failed")
+	}
+
+	a.logger.Println("Service down")
 }
 
 func (a HTTPServer) createAccountHandler() http.HandlerFunc {
@@ -92,6 +121,18 @@ func (a HTTPServer) createTransactionHandler() http.HandlerFunc {
 
 	return handler.NewCreateTransactionHandler(uc, a.logger, a.validator).Handle
 }
+
+//func (a HTTPServer) createCashoutHandler() http.HandlerFunc {
+//	uc := usecase.NewCreateAuthorizationInteractor(
+//		repository.NewCreateAuthorizationRepository(a.database),
+//		repository.NewAccountByIDRepository(a.database),
+//		repository.NewUpdateAccountCreditLimitRepository(a.database),
+//		presenter.NewCreateCashoutPresenter(),
+//		10*time.Second,
+//	)
+//
+//	return handler.NewCreateTransactionHandler(uc, a.logger, a.validator).Handle
+//}
 
 func healthCheck(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

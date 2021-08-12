@@ -68,10 +68,10 @@ make down
 
 | ID                                     | Descrição           | Tipo     |
 | :------------------------------------: | :-----------------: | :------: |
-| `fd426041-0648-40f6-9d04-5284295c5095` | `COMPRA A VISTA`    | `DEBIT`  |
-| `b03dcb59-006f-472f-a8f1-58651990dea6` | `COMPRA PARCELADA`  | `DEBIT`  |
-| `3f973e5b-cb9f-475c-b27d-8f855a0b90b0` | `SAQUE`             | `DEBIT`  |
-| `976f88ea-eb2f-4325-a106-26f9cb35810d` | `PAGAMENTO`         | `CREDIT` |
+| `1` | `COMPRA A VISTA`    | `DEBIT`  |
+| `2` | `COMPRA PARCELADA`  | `DEBIT`  |
+| `3` | `SAQUE`             | `DEBIT`  |
+| `4` | `PAGAMENTO`         | `CREDIT` |
 
 ## Testar API usando curl
 
@@ -140,7 +140,7 @@ curl -i --request POST 'http://localhost:3001/v1/transactions' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "account_id": "deeb291c-18a0-45c3-b28b-df7ebcabe4f8",
-    "operation_id": "3f973e5b-cb9f-475c-b27d-8f855a0b90b0",
+    "operation_id": "3",
     "amount": 100
 }'
 ```
@@ -151,7 +151,7 @@ curl -i --request POST 'http://localhost:3001/v1/transactions' \
     "id": "22985ca3-c777-4ab2-b433-ba3b6844578d",
     "account_id": "deeb291c-18a0-45c3-b28b-df7ebcabe4f8",
     "operation": {
-        "id": "3f973e5b-cb9f-475c-b27d-8f855a0b90b0",
+        "id": "3",
         "description": "SAQUE",
         "type": "DEBIT"
     },

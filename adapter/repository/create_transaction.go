@@ -21,12 +21,12 @@ func NewCreateTransactionRepository(db *sql.DB) domain.TransactionCreator {
 
 // Create performs insert into the database
 func (c createTransactionRepository) Create(ctx context.Context, transaction domain.Transaction) (domain.Transaction, error) {
-	tx, ok := ctx.Value("TransactionContextKey").(*sql.Tx)
+	tx, ok := ctx.Value("TxKey").(*sql.Tx)
 	if !ok {
 		var err error
-		tx, err = c.db.BeginTx(ctx, nil)
+		tx, err = c.db.BeginTx(ctx, &sql.TxOptions{})
 		if err != nil {
-			return domain.Transaction{}, errors.Wrap(err, errDatabase.Error())
+			return domain.Transaction{}, errors.Wrap(err, errUnknown.Error())
 		}
 	}
 
@@ -40,7 +40,7 @@ func (c createTransactionRepository) Create(ctx context.Context, transaction dom
 		transaction.Balance(),
 		transaction.CreatedAt(),
 	); err != nil {
-		return domain.Transaction{}, errors.Wrap(err, errDatabase.Error())
+		return domain.Transaction{}, errors.Wrap(err, errUnknown.Error())
 	}
 
 	return transaction, nil
@@ -49,10 +49,10 @@ func (c createTransactionRepository) Create(ctx context.Context, transaction dom
 func (c createTransactionRepository) WithTransaction(ctx context.Context, fn func(ctxFn context.Context) error) error {
 	tx, err := c.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return errors.Wrap(err, errDatabase.Error())
+		return errors.Wrap(err, errUnknown.Error())
 	}
 
-	ctxTx := context.WithValue(ctx, "TransactionContextKey", tx)
+	ctxTx := context.WithValue(ctx, "TxKey", tx)
 	err = fn(ctxTx)
 	if err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {

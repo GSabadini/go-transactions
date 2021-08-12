@@ -13,17 +13,17 @@ var (
 )
 
 type (
-	// AccountCreator defines the operation of creating a account entity
+	// AccountCreator defines the operation of creating an account entity
 	AccountCreator interface {
 		Create(context.Context, Account) (Account, error)
 	}
 
-	// AccountFinder defines the search operation for a account entity
+	// AccountFinder defines the search operation for an account entity
 	AccountFinder interface {
 		FindByID(context.Context, string) (Account, error)
 	}
 
-	// AccountFinder defines the search operation for a account entity
+	// AccountUpdater defines the update operation for an account entity
 	AccountUpdater interface {
 		UpdateCreditLimit(context.Context, string, int64) error
 	}

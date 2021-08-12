@@ -62,7 +62,7 @@ func (s stubUpdateCreditLimitRepo) UpdateCreditLimit(_ context.Context, _ string
 }
 
 func Test_createTransactionInteractor_Execute(t *testing.T) {
-	var opCompraAVista, _ = domain.NewOperation("fd426041-0648-40f6-9d04-5284295c5095")
+	var opCompraAVista, _ = domain.NewOperation("1")
 
 	type fields struct {
 		repo               domain.TransactionCreator
@@ -113,7 +113,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				ctx: context.Background(),
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
-					OperationID: "fd426041-0648-40f6-9d04-5284295c5095",
+					OperationID: "1",
 					Amount:      10025,
 				},
 			},
@@ -162,7 +162,7 @@ func Test_createTransactionInteractor_Execute(t *testing.T) {
 				ctx: context.Background(),
 				i: CreateTransactionInput{
 					AccountID:   "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
-					OperationID: "fd426041-0648-40f6-9d04-5284295c5095",
+					OperationID: "1",
 					Amount:      10025,
 				},
 			},

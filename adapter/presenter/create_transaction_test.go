@@ -39,7 +39,7 @@ func Test_createTransactionPresenter_Output(t *testing.T) {
 				ID:        "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 				AccountID: "eae0bbf7-19ee-46d6-8244-77bccd64ab93",
 				Operation: usecase.CreateTransactionOperationOutput{
-					ID:          "fd426041-0648-40f6-9d04-5284295c5095",
+					ID:          "1",
 					Description: "COMPRA A VISTA",
 					Type:        "DEBIT",
 				},
@@ -64,7 +64,7 @@ func Test_createTransactionPresenter_Output(t *testing.T) {
 				ID:        "fc95e907-e0eb-4ef8-927e-3eaad3a4d9a8",
 				AccountID: "eae0bbf7-19ee-46d6-8244-77bccd64ab93",
 				Operation: usecase.CreateTransactionOperationOutput{
-					ID:          "976f88ea-eb2f-4325-a106-26f9cb35810d",
+					ID:          "4",
 					Description: "PAGAMENTO",
 					Type:        "CREDIT",
 				},

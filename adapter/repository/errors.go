@@ -7,5 +7,5 @@ const (
 )
 
 var (
-	errDatabase = errors.New("database error")
+	errUnknown = errors.New("unknown error")
 )
