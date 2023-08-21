@@ -9,7 +9,7 @@
 </p>
 
 ## Arquitetura
--  A arquitetura é baseada nos conceitos de Clean Architecture propostas por Uncle Bob. Para mais detalhes clique [aqui](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
+-  A arquitetura é baseada nos conceitos de Arquitetura Limpa propostas por Uncle Bob. Para mais detalhes clique [aqui](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
 ![Clean Architecture](clean.png)
 
