@@ -23,18 +23,6 @@ CREATE TABLE transactions (
     FOREIGN KEY (operation_id) REFERENCES operations(id)
 );
 
-CREATE TABLE authorizations (
-    id VARCHAR(36) PRIMARY KEY UNIQUE,
-    account_id VARCHAR(36) NOT NULL,
-    operation_id VARCHAR(36) NOT NULL,
-    amount INTEGER NOT NULL,
-    created_at TIMESTAMP,
-
-    FOREIGN KEY (account_id) REFERENCES accounts(id),
-    FOREIGN KEY (operation_id) REFERENCES operations(id)
-);
-
-
 INSERT
     INTO
         `operations` (`id`, `description`, `type`)

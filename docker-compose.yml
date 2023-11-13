@@ -1,20 +1,20 @@
-version: "3.3"
+version: "3.7"
 
 services:
   app:
-    container_name: "app"
+    container_name: "go-transactions"
     build:
       context: .
       dockerfile: Dockerfile.dev
     ports:
-      - 3001:3001
+      - "3001:3001"
     volumes:
       - .:/app
     env_file:
       - .env
 
   mysql:
-    container_name: "mysql"
+    container_name: "mysql-transactions"
     image: mysql:5.7
     env_file:
       - .env

@@ -1,6 +1,6 @@
 PWD = $(shell pwd -L)
 IMAGE_NAME = gsabadini/go-transactions
-DOCKER_RUN = docker run --rm -it -w /app -v ${PWD}:/app golang:1.14-stretch
+DOCKER_RUN = docker run --rm -it -w /app -v ${PWD}:/app golang:1.21-alpine
 
 start: init up
 
